@@ -1,772 +1,255 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
-
-    <base target="_top">
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>AI営業ロールプレイシステム</title>
-
-    <!-- CSS -->
-
     <!-- Google Material Icons -->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
-          rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-<style>
-<style>
-:root{--main-color:#7DBE7A;--sub-color:#EAF7EA;--card-color:#FFF;--accent-color:#4CAF50;--text:#333;--border:#DDE8DD;--shadow:0 2px 8px rgba(0,0,0,.08)}
-*{box-sizing:border-box}body{margin:0;font-family:"Segoe UI","Meiryo",sans-serif;background:var(--sub-color);color:var(--text)}
-.hidden{display:none}.container{max-width:1400px;margin:20px auto;padding:20px}
-header{display:flex;justify-content:space-between;align-items:center;background:var(--main-color);color:#fff;padding:16px 24px;border-radius:12px;box-shadow:var(--shadow)}
-.headerCenter,.headerRight{text-align:center}
-main{display:grid;grid-template-columns:320px 1fr;gap:20px;margin-top:20px}
-.card,.goal,.memo,.evaluation{background:#fff;border-radius:12px;padding:18px;box-shadow:var(--shadow);margin-bottom:20px}
-.personaImageArea{text-align:center}#personaImage{width:220px;height:220px;object-fit:cover;border-radius:12px;border:4px solid var(--main-color);background:#f4f4f4}
-#personaName{text-align:center}#emotionArea{text-align:center;font-size:1.2rem;margin:12px 0}
-progress{width:100%;height:18px}.infoItem{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)}
-.chatArea{display:flex;flex-direction:column;background:#fff;border-radius:12px;box-shadow:var(--shadow);overflow:hidden}
-.chatHeader{padding:14px 18px;background:var(--main-color);color:#fff;font-weight:bold}
-#chatWindow{height:550px;overflow-y:auto;padding:20px;background:#f8fff8}
-#voiceStatus{padding:12px;text-align:center;background:#eef8ee;font-weight:bold}
-.sectionTitle{display:flex;align-items:center;gap:8px;font-weight:bold;color:var(--accent-color);margin-bottom:14px}
-textarea{width:100%;min-height:140px;padding:12px;border:1px solid var(--border);border-radius:8px}
-.evaluationCard{border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:12px}.bigScore{font-size:2rem;font-weight:bold;color:var(--accent-color)}
-footer{display:flex;justify-content:space-between;align-items:center;margin-top:20px;gap:10px}
-footer button{padding:12px 20px;border:none;border-radius:8px;background:var(--main-color);color:#fff;cursor:pointer}
-#loadingScreen{position:fixed;inset:0;background:rgba(255,255,255,.95);display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:9999}
-.loader{width:56px;height:56px;border:6px solid #ddd;border-top:6px solid var(--main-color);border-radius:50%;animation:spin 1s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-@media(max-width:900px){main{grid-template-columns:1fr}#personaImage{width:180px;height:180px}footer{flex-direction:column}}
-</style>
-
-</style>
-
+    <style>
+        :root{--main-color:#7DBE7A;--sub-color:#EAF7EA;--card-color:#FFF;--accent-color:#4CAF50;--text:#333;--border:#DDE8DD;--shadow:0 2px 8px rgba(0,0,0,.08)}
+        *{box-sizing:border-box}
+        body{margin:0;font-family:"Segoe UI","Meiryo",sans-serif;background:var(--sub-color);color:var(--text)}
+        .hidden{display:none}
+        .container{max-width:1400px;margin:20px auto;padding:20px}
+        header{display:flex;justify-content:space-between;align-items:center;background:var(--main-color);color:#fff;padding:16px 24px;border-radius:12px;box-shadow:var(--shadow)}
+        .headerCenter,.headerRight{text-align:center}
+        main{display:grid;grid-template-columns:320px 1fr;gap:20px;margin-top:20px}
+        .card,.goal,.memo,.evaluation{background:#fff;border-radius:12px;padding:18px;box-shadow:var(--shadow);margin-bottom:20px}
+        .personaImageArea{text-align:center}
+        #personaImage{width:220px;height:220px;object-fit:cover;border-radius:12px;border:4px solid var(--main-color);background:#f4f4f4}
+        #personaName{text-align:center}
+        #emotionArea{text-align:center;font-size:1.2rem;margin:12px 0}
+        progress{width:100%;height:18px}
+        .infoItem{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)}
+        .chatArea{display:flex;flex-direction:column;background:#fff;border-radius:12px;box-shadow:var(--shadow);overflow:hidden}
+        .chatHeader{padding:14px 18px;background:var(--main-color);color:#fff;font-weight:bold}
+        #chatWindow{height:550px;overflow-y:auto;padding:20px;background:#f8fff8}
+        #voiceStatus{padding:12px;text-align:center;background:#eef8ee;font-weight:bold}
+        .sectionTitle{display:flex;align-items:center;gap:8px;font-weight:bold;color:var(--accent-color);margin-bottom:14px}
+        textarea{width:100%;min-height:140px;padding:12px;border:1px solid var(--border);border-radius:8px}
+        .evaluationCard{border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:12px}
+        .bigScore{font-size:2rem;font-weight:bold;color:var(--accent-color)}
+        footer{display:flex;justify-content:space-between;align-items:center;margin-top:20px;gap:10px}
+        footer button{padding:12px 20px;border:none;border-radius:8px;background:var(--main-color);color:#fff;cursor:pointer}
+        #loadingScreen{position:fixed;inset:0;background:rgba(255,255,255,.95);display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:9999}
+        .loader{width:56px;height:56px;border:6px solid #ddd;border-top:6px solid var(--main-color);border-radius:50%;animation:spin 1s linear infinite}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        @media(max-width:900px){main{grid-template-columns:1fr}#personaImage{width:180px;height:180px}footer{flex-direction:column}}
+        
+        .chatRow { margin-bottom: 15px; display: flex; flex-direction: column; }
+        .chatRow.user { align-items: flex-end; }
+        .chatRow.ai { align-items: flex-start; }
+        .bubble { max-width: 80%; padding: 12px 16px; border-radius: 12px; line-height: 1.5; }
+        .userBubble { background-color: #E8F5E9; border: 1px solid #4CAF50; }
+        .aiBubble { background-color: #ffffff; border: 1px solid #ccc; }
+        .chatTime { font-size: 0.8em; color: #888; margin-bottom: 4px; }
+    </style>
 </head>
-
 <body>
 
-<!-- ========================================= -->
 <!-- ローディング画面 -->
-<!-- ========================================= -->
-
 <div id="loadingScreen">
-
     <div class="loader"></div>
-
-    <div class="loadingText">
-
+    <div class="loadingText" style="margin-top: 15px; font-weight: bold; color: #4CAF50;">
         AI営業ロールプレイシステムを起動しています...
-
     </div>
-
 </div>
 
-<!-- ========================================= -->
 <!-- エラー表示 -->
-<!-- ========================================= -->
-
-<div id="errorMessage" class="hidden">
-
-</div>
-
-<!-- ========================================= -->
-<!-- メインコンテナ -->
-<!-- ========================================= -->
+<div id="errorMessage" class="hidden" style="color: red; padding: 20px; text-align: center;"></div>
 
 <div class="container">
-
-<!-- ========================================= -->
-<!-- Header -->
-<!-- ========================================= -->
-
-<header>
-
-    <div class="headerLeft">
-
-        <h1>
-
-            🌿 AI営業ロールプレイ
-
-        </h1>
-
-        <div id="systemVersion">
-
-            Version 2.0
-
+    <header>
+        <div class="headerLeft">
+            <h1 style="margin: 0; font-size: 1.5rem;">🌿 AI営業ロールプレイ</h1>
+            <div id="systemVersion" style="font-size: 0.8rem;">Version 2.0</div>
         </div>
-
-    </div>
-
-    <div class="headerCenter">
-
-        <div class="headerLabel">
-
-            シナリオ
-
+        <div class="headerCenter">
+            <div class="headerLabel" style="font-size: 0.8rem;">シナリオ</div>
+            <div id="scenarioName" style="font-weight: bold;">読み込み中...</div>
         </div>
-
-        <div id="scenarioName">
-
-            読み込み中...
-
+        <div class="headerRight">
+            <div class="headerLabel" style="font-size: 0.8rem;">経過時間</div>
+            <div id="timer" style="font-size: 1.2rem; font-weight: bold;">00:00</div>
         </div>
-
-    </div>
+    </header>
 
     <div id="app-container">
-      <!-- ▼▼▼ ここから追加：モード切替とペルソナ選択 ▼▼▼ -->
-      
-      <!-- モード切替ボタン -->
-      <div style="text-align: center; margin-bottom: 20px; margin-top: 10px;">
-        <button id="modeFreeBtn" style="background-color: #4CAF50; color: white; padding: 10px 25px; border: 2px solid #4CAF50; border-radius: 20px 0 0 20px; font-weight: bold; cursor: pointer;">フリートーク</button>
-        <button id="modeTraceBtn" style="background-color: #ffffff; color: #4CAF50; padding: 10px 25px; border: 2px solid #4CAF50; border-radius: 0 20px 20px 0; font-weight: bold; cursor: pointer;">トレースモード</button>
-      </div>
-
-      <!-- ペルソナ（お客様）選択プルダウン -->
-      <div style="background-color: #ffffff; border: 2px solid #4CAF50; border-radius: 8px; padding: 15px; margin-bottom: 20px; display: flex; justify-content: center; align-items: center; gap: 15px;">
-        <span style="color: #4CAF50; font-weight: bold;">🎯 お客様の設定:</span>
-        
-        <select id="selectAge" style="padding: 8px; border-radius: 4px; border: 1px solid #ccc; background-color: #fafafa; color: #333;">
-          <option value="all">年代すべて</option>
-          <option value="20代">20代</option>
-          <option value="30代">30代</option>
-          <option value="40代">40代</option>
-          <option value="50代">50代</option>
-          <option value="60代">60代以上</option>
-        </select>
-
-        <select id="selectGender" style="padding: 8px; border-radius: 4px; border: 1px solid #ccc; background-color: #fafafa; color: #333;">
-          <option value="all">性別すべて</option>
-          <option value="男性">男性</option>
-          <option value="女性">女性</option>
-        </select>
-        
-        <div id="personaSearchResult" style="color: #FFC107; font-weight: bold; font-size: 0.9em; min-width: 120px;"></div>
-      </div>
-      
-      <!-- ▲▲▲ 追加ここまで ▲▲▲ -->
-
-    <div class="headerRight">
-
-        <div class="headerLabel">
-
-            経過時間
-
+        <!-- モード切替ボタン -->
+        <div style="text-align: center; margin-bottom: 20px; margin-top: 20px;">
+            <button id="modeFreeBtn" style="background-color: #4CAF50; color: white; padding: 10px 25px; border: 2px solid #4CAF50; border-radius: 20px 0 0 20px; font-weight: bold; cursor: pointer;">フリートーク</button>
+            <button id="modeTraceBtn" style="background-color: #ffffff; color: #4CAF50; padding: 10px 25px; border: 2px solid #4CAF50; border-radius: 0 20px 20px 0; font-weight: bold; cursor: pointer;">トレースモード</button>
         </div>
 
-        <div id="timer">
-
-            00:00
-
+        <!-- ペルソナ選択プルダウン -->
+        <div style="background-color: #ffffff; border: 2px solid #4CAF50; border-radius: 8px; padding: 15px; margin-bottom: 20px; display: flex; justify-content: center; align-items: center; gap: 15px;">
+            <span style="color: #4CAF50; font-weight: bold;">🎯 お客様の設定:</span>
+            <select id="selectAge" style="padding: 8px; border-radius: 4px; border: 1px solid #ccc; background-color: #fafafa; color: #333;">
+                <option value="all">年代すべて</option>
+                <option value="20代">20代</option>
+                <option value="30代">30代</option>
+                <option value="40代">40代</option>
+                <option value="50代">50代</option>
+                <option value="60代">60代以上</option>
+            </select>
+            <select id="selectGender" style="padding: 8px; border-radius: 4px; border: 1px solid #ccc; background-color: #fafafa; color: #333;">
+                <option value="all">性別すべて</option>
+                <option value="男性">男性</option>
+                <option value="女性">女性</option>
+            </select>
+            <div id="personaSearchResult" style="color: #FFC107; font-weight: bold; font-size: 0.9em; min-width: 120px;"></div>
         </div>
 
+        <main>
+            <!-- 左側パネル -->
+            <aside class="leftPanel">
+                <div class="card">
+                    <div class="personaImageArea">
+                        <img id="personaImage" src="" alt="ペルソナ画像">
+                    </div>
+                    <h2 id="personaName">読み込み中...</h2>
+                    <div id="emotionArea">
+                        <span id="emotionIcon">😊</span>
+                        <span id="emotionText">普通</span>
+                    </div>
+                    <div class="trustArea" style="margin-bottom: 15px;">
+                        <div class="trustLabel" style="font-weight: bold; font-size: 0.9em; color: #555;">信頼度</div>
+                        <progress id="trustGauge" value="50" max="100"></progress>
+                        <div id="trustValue" style="text-align: right; font-size: 0.9em;">50%</div>
+                    </div>
+                    <div class="infoArea">
+                        <div class="infoItem"><span class="infoTitle">年代</span><span id="age">-</span></div>
+                        <div class="infoItem"><span class="infoTitle">性別</span><span id="gender">-</span></div>
+                        <div class="infoItem"><span class="infoTitle">職業</span><span id="job">-</span></div>
+                        <div class="infoItem"><span class="infoTitle">家族構成</span><span id="family">-</span></div>
+                        <div class="infoItem"><span class="infoTitle">加入保障</span><span id="insurance">-</span></div>
+                        <div class="infoItem"><span class="infoTitle">性格</span><span id="personality">-</span></div>
+                        <div class="infoItem"><span class="infoTitle">難易度</span><span id="difficulty">-</span></div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- メインエリア -->
+            <section style="display: flex; gap: 20px; flex-grow: 1; width: 100%;">
+                <div class="chatArea" style="flex: 7; display: flex; flex-direction: column;">
+                    <div class="chatHeader">
+                        <span class="material-icons" style="vertical-align: middle;">forum</span> 会話履歴
+                    </div>
+                    
+                    <div id="traceGuideArea" style="display: none; background-color: #fffde7; border: 2px solid #FBC02D; border-radius: 8px; padding: 15px; margin: 10px;">
+                        <div style="font-weight: bold; color: #F57F17; margin-bottom: 5px;">
+                            📝 トレースステップ <span id="traceStep">1</span>：<span id="traceGoal">目標</span>
+                        </div>
+                        <div style="font-size: 1.1em; color: #333;">
+                            <span style="font-size: 0.85em; color: #666;">▼ この通りに話してみましょう</span><br>
+                            「<span id="traceTalk" style="font-weight: bold;">模範トークがここに入ります</span>」
+                        </div>
+                    </div>
+
+                    <div id="chatWindow"></div>
+                    
+                    <div style="display: flex; gap: 10px; margin: 15px; padding: 10px; background-color: #f4f4f4; border-radius: 8px;">
+                        <input type="text" id="chatInput" placeholder="メッセージを入力（Enterキーで送信）..." disabled 
+                               style="flex-grow: 1; padding: 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; outline: none;">
+                        <button id="sendBtn" disabled 
+                                style="padding: 10px 24px; background-color: #4CAF50; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">
+                            送信
+                        </button>
+                    </div>
+                    
+                    <div id="voiceStatus">🎤 待機中</div>
+                </div>
+
+                <div class="videoArea" style="flex: 3; display: flex; flex-direction: column;">
+                    <div class="chatHeader" style="background-color: #FBC02D; color: #fff;">
+                        <span class="material-icons" style="vertical-align: middle;">videocam</span> プレビュー
+                    </div>
+                    <div style="background-color: #e8f5e9; border: 2px solid #4CAF50; border-top: none; border-radius: 0 0 8px 8px; overflow: hidden; display: flex; justify-content: center; align-items: center; aspect-ratio: 4/3; margin-bottom: auto;">
+                        <video id="userVideo" autoplay muted playsinline style="width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); display: none;"></video>
+                        <div id="videoPlaceholder" style="color: #4CAF50; text-align: center; padding: 20px;">
+                            <span class="material-icons" style="font-size: 3rem;">videocam_off</span><br>
+                            <span>ロープレ開始時に<br>カメラが起動します</span>
+                        </div>
+                    </div>
+                    <div id="recordingStatus" style="margin-top: 15px; text-align: center; color: #555; font-weight: bold;">
+                        ⏹️ 録画待機中
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <section class="goal">
+            <div class="sectionTitle"><span class="material-icons">school</span> 本日の学習目標</div>
+            <ul id="goalList"><li>読み込み中...</li></ul>
+        </section>
+
+        <section class="memo">
+            <div class="sectionTitle"><span class="material-icons">edit_note</span> 営業メモ</div>
+            <textarea id="memo" placeholder="ロープレ中に自由にメモできます。内容はAI評価には影響しません。"></textarea>
+        </section>
+
+        <section class="evaluation">
+            <div class="sectionTitle"><span class="material-icons">smart_toy</span> AI評価</div>
+            <div id="evaluationArea">
+                <div class="evaluationMessage">ロープレ終了後にGeminiが評価します。</div>
+                <div class="evaluationCard">
+                    <div class="evaluationLabel">総合評価</div>
+                    <div id="totalScore" class="bigScore">--</div>
+                </div>
+                <div class="evaluationCard">
+                    <div class="evaluationLabel">信頼度</div>
+                    <progress id="evaluationTrustGauge" value="0" max="100"></progress>
+                    <div id="trustScore">--</div>
+                </div>
+                <div class="evaluationCard">
+                    <div class="evaluationLabel">お客様の最終感情</div>
+                    <div id="finalEmotion">😊 普通</div>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <div class="footerLeft">
+                <button id="voiceBtn">🎤 話す</button>
+                <button id="startBtn">▶ ロープレ開始</button>
+                <button id="endBtn">⏹ ロープレ終了</button>
+                <button id="resetBtn">🔄 リセット</button>
+            </div>
+            <div class="footerRight">
+                <span id="voiceStatusFooter" style="font-weight: bold; color: #4CAF50;">🎤 待機中</span>
+            </div>
+        </footer>
     </div>
-
-</header>
-
-<!-- ========================================= -->
-<!-- Main -->
-<!-- ========================================= -->
-
-<main>
-
-<!-- ========================================= -->
-<!-- 左側パネル -->
-<!-- ========================================= -->
-
-<aside class="leftPanel">
-
-    <div class="card">
-
-        <!-- ペルソナ画像 -->
-
-        <div class="personaImageArea">
-
-            <img
-                id="personaImage"
-                src=""
-                alt="ペルソナ画像">
-
-        </div>
-
-        <!-- ペルソナ名 -->
-
-        <h2 id="personaName">
-
-            読み込み中...
-
-        </h2>
-
-        <!-- 感情 -->
-
-        <div id="emotionArea">
-
-            <span id="emotionIcon">
-
-                😊
-
-            </span>
-
-            <span id="emotionText">
-
-                普通
-
-            </span>
-
-        </div>
-
-        <!-- 信頼度 -->
-
-        <div class="trustArea">
-
-            <div class="trustLabel">
-
-                信頼度
-
-            </div>
-
-            <progress
-                id="trustGauge"
-                value="50"
-                max="100">
-
-            </progress>
-
-            <div id="trustValue">
-
-                50%
-
-            </div>
-
-        </div>
-
-        <!-- ペルソナ情報 -->
-
-        <div class="infoArea">
-
-            <div class="infoItem">
-
-                <span class="infoTitle">
-
-                    年代
-
-                </span>
-
-                <span id="age">
-
-                    -
-
-                </span>
-
-            </div>
-
-            <div class="infoItem">
-
-                <span class="infoTitle">
-
-                    性別
-
-                </span>
-
-                <span id="gender">
-
-                    -
-
-                </span>
-
-            </div>
-
-            <div class="infoItem">
-
-                <span class="infoTitle">
-
-                    職業
-
-                </span>
-
-                <span id="job">
-
-                    -
-
-                </span>
-
-            </div>
-
-            <div class="infoItem">
-
-                <span class="infoTitle">
-
-                    家族構成
-
-                </span>
-
-                <span id="family">
-
-                    -
-
-                </span>
-
-            </div>
-
-            <div class="infoItem">
-
-                <span class="infoTitle">
-
-                    加入保障
-
-                </span>
-
-                <span id="insurance">
-
-                    -
-
-                </span>
-
-            </div>
-
-            <div class="infoItem">
-
-                <span class="infoTitle">
-
-                    性格
-
-                </span>
-
-                <span id="personality">
-
-                    -
-
-                </span>
-
-            </div>
-
-            <div class="infoItem">
-
-                <span class="infoTitle">
-
-                    難易度
-
-                </span>
-
-                <span id="difficulty">
-
-                    -
-
-                </span>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</aside>
-
-<!-- ========================================= -->
-<!-- メインエリア（チャット ＆ カメラプレビュー） -->
-<!-- ========================================= -->
-<section style="display: flex; gap: 20px; flex-grow: 1; width: 100%;">
-
-    <!-- ▼▼ 左側：チャットエリア（全体の約70%） ▼▼ -->
-    <div class="chatArea" style="flex: 7; display: flex; flex-direction: column;">
-        <div class="chatHeader">
-            <span class="material-icons">forum</span> 会話履歴
-        </div>
-        
-        <!-- ▼▼ 新規追加：トレースモード用のカンペ枠 ▼▼ -->
-        <div id="traceGuideArea" style="display: none; background-color: #fffde7; border: 2px solid #FBC02D; border-radius: 8px; padding: 15px; margin: 10px 0;">
-            <div style="font-weight: bold; color: #F57F17; margin-bottom: 5px;">
-                📝 トレースステップ <span id="traceStep">1</span>：<span id="traceGoal">目標</span>
-            </div>
-            <div style="font-size: 1.1em; color: #333;">
-                <span style="font-size: 0.85em; color: #666;">▼ この通りに話してみましょう</span><br>
-                「<span id="traceTalk" style="font-weight: bold;">模範トークがここに入ります</span>」
-            </div>
-        </div>
-        <!-- ▲▲ 新規追加 ここまで ▲▲ -->
-
-        <div id="chatWindow">
-            <!-- script.htmlで追加 -->
-        </div>
-        
-        <div id="chatWindow">
-            <!-- script.htmlで追加 -->
-        </div>
-        
-        <!-- テキスト入力エリア -->
-        <div style="display: flex; gap: 10px; margin-top: 15px; padding: 10px; background-color: #ffffff; border-radius: 8px;">
-            <input type="text" id="chatInput" placeholder="メッセージを入力（Enterキーで送信）..." disabled 
-                   style="flex-grow: 1; padding: 12px; border: 1px solid #e0e0e0; border-radius: 6px; font-size: 16px; outline: none;">
-            <button id="sendBtn" disabled 
-                    style="padding: 10px 24px; background-color: #4CAF50; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: background-color 0.3s;">
-                送信
-            </button>
-        </div>
-        
-        <!-- 音声状態 -->
-        <div id="voiceStatus">
-            🎤 待機中
-        </div>
-    </div>
-    <!-- ▲▲ 左側：チャットエリア ここまで ▲▲ -->
-
-
-    <!-- ▼▼ 右側：カメラプレビューエリア（全体の約30%） ▼▼ -->
-    <div class="videoArea" style="flex: 3; display: flex; flex-direction: column;">
-        <!-- 差し色の黄色をヘッダーのアクセントに -->
-        <div class="chatHeader" style="background-color: #FBC02D; color: #fff;">
-            <span class="material-icons">videocam</span> プレビュー
-        </div>
-        
-        <!-- 映像表示枠 -->
-        <div style="background-color: #e8f5e9; border: 2px solid #4CAF50; border-top: none; border-radius: 0 0 8px 8px; overflow: hidden; display: flex; justify-content: center; align-items: center; aspect-ratio: 4/3; margin-bottom: auto;">
-            <!-- videoタグ：自分の映像を鏡のように左右反転させて表示 -->
-            <video id="userVideo" autoplay muted playsinline 
-                   style="width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); display: none;">
-            </video>
-            <!-- カメラ未起動時のプレースホルダー -->
-            <div id="videoPlaceholder" style="color: #4CAF50; text-align: center; padding: 20px;">
-                <span class="material-icons" style="font-size: 3rem;">videocam_off</span><br>
-                <span>ロープレ開始時に<br>カメラが起動します</span>
-            </div>
-        </div>
-        
-        <!-- 録画ステータス -->
-        <div id="recordingStatus" style="margin-top: 15px; text-align: center; color: #555; font-weight: bold;">
-            ⏹️ 録画待機中
-        </div>
-    </div>
-    <!-- ▲▲ 右側：カメラプレビューエリア ここまで ▲▲ -->
-
-</section>
-
-        <!-- script.htmlで追加 -->
-
-    </div>
-
-
-</section>
-
-</main>
-
-<!-- ========================================= -->
-<!-- 本日の学習目標 -->
-<!-- ========================================= -->
-
-<section class="goal">
-
-    <div class="sectionTitle">
-
-        <span class="material-icons">school</span>
-
-        本日の学習目標
-
-    </div>
-
-    <!-- script.htmlで自動生成 -->
-    <ul id="goalList">
-
-        <li>読み込み中...</li>
-
-    </ul>
-
-</section>
-
-<!-- ========================================= -->
-<!-- 営業メモ -->
-<!-- ========================================= -->
-
-<section class="memo">
-
-    <div class="sectionTitle">
-
-        <span class="material-icons">edit_note</span>
-
-        営業メモ
-
-    </div>
-
-    <textarea
-        id="memo"
-        placeholder="ロープレ中に自由にメモできます。内容はAI評価には影響しません。"></textarea>
-
-</section>
-
-<!-- ========================================= -->
-<!-- AI評価 -->
-<!-- ========================================= -->
-
-<section class="evaluation">
-
-    <div class="sectionTitle">
-
-        <span class="material-icons">smart_toy</span>
-
-        AI評価
-
-    </div>
-
-    <div id="evaluationArea">
-
-        <div class="evaluationMessage">
-
-            ロープレ終了後にGeminiが評価します。
-
-        </div>
-
-        <!-- 総合評価 -->
-
-        <div class="evaluationCard">
-
-            <div class="evaluationLabel">
-
-                総合評価
-
-            </div>
-
-            <div id="totalScore" class="bigScore">
-
-                --
-
-            </div>
-
-        </div>
-
-        <!-- 信頼度 -->
-
-        <div class="evaluationCard">
-
-            <div class="evaluationLabel">
-
-                信頼度
-
-            </div>
-
-            <progress
-                id="evaluationTrustGauge"
-                value="0"
-                max="100">
-
-            </progress>
-
-            <div id="trustScore">
-
-                --
-
-            </div>
-
-        </div>
-
-        <!-- 感情 -->
-
-        <div class="evaluationCard">
-
-            <div class="evaluationLabel">
-
-                お客様の最終感情
-
-            </div>
-
-            <div id="finalEmotion">
-
-                😊 普通
-
-            </div>
-
-        </div>
-
-        <!-- 学習目標 -->
-
-        <div class="evaluationCard">
-
-            <div class="evaluationLabel">
-
-                学習目標達成度
-
-            </div>
-
-            <div id="goalResult">
-
-                ロープレ終了後に判定します。
-
-            </div>
-
-        </div>
-
-        <!-- 良かった点 -->
-
-        <div class="evaluationCard">
-
-            <div class="evaluationLabel">
-
-                良かった点
-
-            </div>
-
-            <div id="goodPoints">
-
-                ロープレ終了後に表示されます。
-
-            </div>
-
-        </div>
-
-        <!-- 改善点 -->
-
-        <div class="evaluationCard">
-
-            <div class="evaluationLabel">
-
-                改善点
-
-            </div>
-
-            <div id="improvementPoints">
-
-                ロープレ終了後に表示されます。
-
-            </div>
-
-        </div>
-
-        <!-- AIアドバイス -->
-
-        <div class="evaluationCard">
-
-            <div class="evaluationLabel">
-
-                AIアドバイス
-
-            </div>
-
-            <div id="aiAdvice">
-
-                ロープレ終了後にGeminiが改善案を提案します。
-
-            </div>
-
-        </div>
-
-        <!-- 次回チャレンジ -->
-
-        <div class="evaluationCard">
-
-            <div class="evaluationLabel">
-
-                次回チャレンジ
-
-            </div>
-
-            <div id="nextChallenge">
-
-                次回の課題が表示されます。
-
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
-
-<!-- ========================================= -->
-<!-- フッター -->
-<!-- ========================================= -->
-
-<footer>
-
-    <div class="footerLeft">
-
-        <button id="voiceBtn">
-    　　　🎤 話す
-　　　　　</button>
-
-        <button id="startBtn">
-
-            ▶ ロープレ開始
-
-        </button>
-
-        <button id="endBtn">
-
-            ⏹ ロープレ終了
-
-        </button>
-
-        <button id="resetBtn">
-
-            🔄 リセット
-
-        </button>
-
-    </div>
-
-    <div class="footerRight">
-
-        <span id="voiceStatusFooter">
-
-            🎤 待機中
-
-        </span>
-
-    </div>
-
-</footer>
-
 </div>
 
-<!-- ========================================= -->
-<!-- JavaScript -->
-<!-- ========================================= -->
-
-
 <script>
-/*************************************************
- *
- * script.html
- * Version 2.0
- * AI営業ロールプレイシステム
- *
- *************************************************/
-
 const APP = {
-    /*============================================
-      定数
-    ============================================*/
     VERSION : "2.0.0",
     TIMER_INTERVAL : 1000,
+    ENDPOINT_URL: "https://script.google.com/macros/s/AKfycby9oUrrcnYJf5wD_xvIdUt84eofYXNRxwomhAtBSp_ZB8eCcJ6L3HbXLDZui20x-c2B/exec",
 
-    /*============================================
-      アプリ状態
-    ============================================*/
     state : {
         timer : null,
         seconds : 0,
         rolePlay : false,
         persona : null,
-        personaList : [], // ← これを追加（全データを保存する箱）
-        mode: "free",     // ← これを追加（現在のモード）
+        personaList : [], 
+        mode: "free",     
         scenario : null,
         goals : [],
         chatHistory : [],
         trust : 50,
         emotion : "😊",
         loading : false,
-        // ▼▼ ここから追加 ▼▼
-        mediaRecorder: null, // 録画する機械
-        recordedChunks: [],  // 録画データを貯める箱
-        cameraStream: null,   // カメラの映像データ
-        traceData: [],       // トレース台本の全データ
-        currentTraceIndex: 0 // 現在何番目のステップか（0からスタート）
+        mediaRecorder: null, 
+        recordedChunks: [],  
+        cameraStream: null,   
+        traceData: [],       
+        currentTraceIndex: 0 
     },
 
-    /*============================================
-      初期化
-    ============================================*/
     initialize(){
         console.log("AI営業ロールプレイ 起動");
         this.showLoading();
@@ -776,22 +259,16 @@ const APP = {
         this.loadMasterData();
     },
 
-    /*============================================
-      初期画面
-    ============================================*/
     initializeDisplay(){
         document.getElementById("timer").textContent = "00:00";
         this.setVoiceStatus("🎤 待機中");
     },
 
-/*============================================
-      ボタン初期化
-    ============================================*/
     initializeButtons(){
         document.getElementById("startBtn").addEventListener("click", () => this.startRolePlay());
         document.getElementById("endBtn").addEventListener("click", () => this.endRolePlay());
         document.getElementById("resetBtn").addEventListener("click", () => this.resetRolePlay());
-        document.getElementById("voiceBtn").addEventListener("click", () => this.startVoiceRecognition());
+        document.getElementById("voiceBtn").addEventListener("click", () => this.toggleVoice());
         
         document.getElementById("sendBtn").addEventListener("click", () => this.sendTextMessage());
         document.getElementById("chatInput").addEventListener("keypress", (e) => {
@@ -801,18 +278,14 @@ const APP = {
         document.getElementById("modeFreeBtn").addEventListener("click", () => this.switchMode("free"));
         document.getElementById("modeTraceBtn").addEventListener("click", () => this.switchMode("trace"));
         
-        // ▼▼ ここが重要：プルダウン変更時の検知 ▼▼
         document.getElementById("selectAge").addEventListener("change", () => this.changePersonaByCondition());
         document.getElementById("selectGender").addEventListener("change", () => this.changePersonaByCondition());
         
         this.updateButtons();
     },
 
-
-    // ▼▼ 新規追加：モード切替の見た目を変更する関数 ▼▼
-// ▼▼ 上書き：モード切替の見た目を変更し、カンペを出し入れする ▼▼
     switchMode(targetMode){
-        if(this.state.rolePlay) return; // ロープレ中は切替不可
+        if(this.state.rolePlay) return; 
         this.state.mode = targetMode;
         
         const freeBtn = document.getElementById("modeFreeBtn");
@@ -822,23 +295,20 @@ const APP = {
         if(targetMode === "free"){
             freeBtn.style.backgroundColor = "#4CAF50"; freeBtn.style.color = "white";
             traceBtn.style.backgroundColor = "#ffffff"; traceBtn.style.color = "#4CAF50";
-            if(guideArea) guideArea.style.display = "none"; // フリーなら隠す
+            if(guideArea) guideArea.style.display = "none";
         } else {
             freeBtn.style.backgroundColor = "#ffffff"; freeBtn.style.color = "#4CAF50";
             traceBtn.style.backgroundColor = "#4CAF50"; traceBtn.style.color = "white";
             if(guideArea) {
-                guideArea.style.display = "block"; // トレースなら表示
-                this.state.currentTraceIndex = 0;  // 最初から
-                this.updateTraceGuide();           // 文字を入れる
+                guideArea.style.display = "block";
+                this.state.currentTraceIndex = 0;
+                this.updateTraceGuide();
             }
         }
     },
 
-    // ▼▼ 新規追加：カンペの文字を最新のステップに書き換える関数 ▼▼
     updateTraceGuide(){
         if(this.state.traceData.length === 0) return;
-        
-        // 今の順番のデータを取得
         const currentData = this.state.traceData[this.state.currentTraceIndex];
         if(!currentData) return;
 
@@ -846,13 +316,11 @@ const APP = {
         const goalEl = document.getElementById("traceGoal");
         const talkEl = document.getElementById("traceTalk");
 
-        // 画面に文字を入れる
         if(stepEl) stepEl.textContent = currentData.ステップ || (this.state.currentTraceIndex + 1);
         if(goalEl) goalEl.textContent = currentData.営業の目標 || "";
         if(talkEl) talkEl.textContent = currentData.模範トーク || "";
     },
 
-// ▼▼ ここが重要：絞り込みと画面更新の本体 ▼▼
     changePersonaByCondition(){
         if(this.state.rolePlay || this.state.personaList.length === 0) return;
 
@@ -860,7 +328,6 @@ const APP = {
         const gender = document.getElementById("selectGender").value;
         const resultMsg = document.getElementById("personaSearchResult");
         
-        // 条件に合う人を抽出
         const filtered = this.state.personaList.filter(p => {
             const matchAge = (age === "all") || (p.年代 === age);
             const matchGender = (gender === "all") || (p.性別 === gender);
@@ -868,7 +335,6 @@ const APP = {
         });
 
         if(filtered.length > 0){
-            // 複数いる場合はランダムで1人選択
             const selected = filtered[Math.floor(Math.random() * filtered.length)];
             this.state.persona = selected;
             this.displayPersona(selected);
@@ -880,35 +346,54 @@ const APP = {
         }
     },
     
-// 【新規追加】テキスト入力欄からの送信処理
     sendTextMessage(){
         const input = document.getElementById("chatInput");
         if(!input) return;
-        
-        const text = input.value.trim(); // 前後の空白を削除
+        const text = input.value.trim();
         if(text) {
-            this.sendMessage(text); // 既存の送信処理へ渡す
-            input.value = "";       // 送信後に入力枠を空にする
+            this.sendMessage(text);
+            input.value = "";
         }
     },
-    /*============================================
-      マスターデータ読込
-    ============================================*/
-    loadMasterData(){
-       // GASのURLへ動画データを包んで送る
-const response = await fetch(this.ENDPOINT_URL, {
-    method: "POST",
-    headers: { "Content-Type": "text/plain" },
-    body: JSON.stringify({ 
-        action: "uploadVideo", // 「動画を保存して」という目印
-        videoData: base64Data, // 動画本体
-        filename: filename     // ファイル名
-    })
-});
 
-    /*============================================
-      表示系・UI操作
-    ============================================*/
+    async loadMasterData(){
+        try {
+            const response = await fetch(this.ENDPOINT_URL, {
+                method: "POST",
+                headers: { "Content-Type": "text/plain" },
+                body: JSON.stringify({ action: "init" })
+            });
+            const responseData = await response.json();
+            
+            if (responseData.status === "success") {
+                const data = responseData.data;
+                this.state.personaList = data.personaList || []; 
+                this.state.traceData = data.traceData || [];
+                
+                if(this.state.personaList.length > 0) {
+                    this.state.persona = this.state.personaList[0]; 
+                } else {
+                    this.state.persona = { 名前: "該当なし", 年代: "-", 性別: "-", 職業: "-", 家族構成: "-", 加入状況: "-", 性格: "-", 難易度: "-" };
+                }
+                this.displayPersona(this.state.persona);
+                this.state.scenario = data.scenario;
+                this.displayScenario(data.scenario);
+                this.state.goals = data.goals || [];
+                this.displayGoals(this.state.goals);
+                this.hideLoading();
+            } else {
+                throw new Error(responseData.message || "データ取得失敗");
+            }
+        } catch (error) {
+            console.error("Master Data Load Error:", error);
+            this.state.persona = { 名前: "テスト顧客", 年代: "30代", 性別: "男性", 職業: "会社員", 家族構成: "妻", 加入状況: "未加入", 性格: "普通", 難易度: "易しい", 画像URL: "" };
+            this.displayPersona(this.state.persona);
+            this.displayScenario({ シナリオ名: "接続テストモード" });
+            this.displayGoals([{ 学習目標: "※裏側のGASプログラムが更新されるまで仮データで動作しています。" }]);
+            this.hideLoading();
+        }
+    },
+
     showLoading() { document.getElementById("loadingScreen").style.display = "flex"; },
     hideLoading() { document.getElementById("loadingScreen").style.display = "none"; },
     
@@ -938,7 +423,6 @@ const response = await fetch(this.ENDPOINT_URL, {
         document.getElementById("voiceBtn").disabled = !this.state.rolePlay;
         document.getElementById("resetBtn").disabled = this.state.rolePlay;
 
-        // 【追記】テキスト入力欄と送信ボタンの有効/無効切り替え
         const chatInput = document.getElementById("chatInput");
         const sendBtn = document.getElementById("sendBtn");
         if(chatInput) chatInput.disabled = !this.state.rolePlay;
@@ -950,9 +434,6 @@ const response = await fetch(this.ENDPOINT_URL, {
         chat.scrollTop = chat.scrollHeight;
     },
 
-    /*============================================
-      タイマー処理
-    ============================================*/
     initializeTimer(){
         this.state.seconds = 0;
         this.updateTimer();
@@ -980,9 +461,6 @@ const response = await fetch(this.ENDPOINT_URL, {
             String(minute).padStart(2,"0") + ":" + String(second).padStart(2,"0");
     },
 
-    /*============================================
-      データ表示（ペルソナ・シナリオなど）
-    ============================================*/
     displayPersona(persona){
         if(!persona) return;
         this.setText("personaName", persona.名前 || "-");
@@ -1016,9 +494,6 @@ const response = await fetch(this.ENDPOINT_URL, {
         });
     },
 
-    /*============================================
-      ステータス更新（感情・信頼度）
-    ============================================*/
     updateEmotion(icon, text){
         this.setText("emotionIcon", icon);
         this.setText("emotionText", text);
@@ -1052,16 +527,14 @@ const response = await fetch(this.ENDPOINT_URL, {
         this.updateTrust(this.state.trust);
     },
 
-    /*============================================
-      チャット関連処理
-    ============================================*/
     clearChat(){
         document.getElementById("chatWindow").innerHTML = "";
         this.state.chatHistory = [];
     },
 
     showWelcomeMessage(){
-        this.appendAIMessage(`こんにちは。\n${this.state.persona.名前}です。\n本日はよろしくお願いします。`);
+        const pName = this.state.persona ? this.state.persona.名前 : "お客様";
+        this.appendAIMessage(`こんにちは。\n${pName}です。\n本日はよろしくお願いします。`);
     },
 
     appendAIMessage(message){
@@ -1088,42 +561,29 @@ const response = await fetch(this.ENDPOINT_URL, {
         this.appendUserMessage(message);
         this.state.chatHistory.push({ role: "user", message: message, time: new Date().toISOString() });
         
-        // ▼▼ ここから分岐 ▼▼
         if (this.state.mode === "trace") {
-            // トレースモード：台本通りに処理を進める
             this.processTraceStep(message);
         } else {
-            // フリーモード：今まで通りGemini（AI）に考えてもらう
             this.evaluateConversation(message); 
             this.requestAIResponse(message);
         }
     },
 
-    // ▼▼ 新規追加：トレースモード用の進行処理 ▼▼
     processTraceStep(userMessage){
         const currentData = this.state.traceData[this.state.currentTraceIndex];
         if(!currentData) return;
 
-        // スプレッドシートから決まった返答を取得（列名が「お客様の返」でも「お客様の返答」でも動くようにしています）
         const reply = currentData.お客様の返答 || currentData.お客様の返 || "（返答データがありません）";
-        
-        // AIが少し考えているような「間」を作る
         this.setVoiceStatus("🤖 台本を確認中...");
         document.getElementById("voiceBtn").disabled = true;
 
-        // 1秒後にお客様からの返事を画面に出す
         setTimeout(() => {
             this.receiveAIMessage(reply);
-
-            // カンペを次のステップへ進める
             this.state.currentTraceIndex++;
             
-            // まだ次のステップが残っているかチェック
             if (this.state.currentTraceIndex < this.state.traceData.length) {
-                // 次のカンペを表示
                 this.updateTraceGuide();
             } else {
-                // 台本がすべて終わった場合
                 const guideArea = document.getElementById("traceGuideArea");
                 if(guideArea) {
                     guideArea.innerHTML = "<div style='color: #4CAF50; font-weight: bold; text-align: center; font-size: 1.2em;'>🎉 トレース完了！お手本通りのロープレができました！<br><span style='font-size: 0.7em; color: #666;'>※右上の「ロープレ終了」ボタンを押してください</span></div>";
@@ -1132,120 +592,51 @@ const response = await fetch(this.ENDPOINT_URL, {
         }, 1000); 
     },
 
-    /*============================================
-      AI通信処理（Gemini連携用）
-    ============================================*/
-async requestAIResponse(message) {
-    this.setVoiceStatus("🤖 AIが考えています...");
-    document.getElementById("voiceBtn").disabled = true;
+    async requestAIResponse(message) {
+        this.setVoiceStatus("🤖 AIが考えています...");
+        document.getElementById("voiceBtn").disabled = true;
 
-    // ▼ 先ほど取得したGASのURLをここに貼ります ▼
-    const endpointUrl = "https://script.google.com/macros/s/AKfycby9oUrrcnYJf5wD_xvIdUt84eofYXNRxwomhAtBSp_ZB8eCcJ6L3HbXLDZui20x-c2B/exec";
+        const payload = {
+            action: "chat", 
+            chatHistory: this.state.chatHistory,
+            persona: this.state.persona,
+            scenario: this.state.scenario
+        };
 
-    // GASに送るデータの箱（action: "chat" という目印を追加しています）
-    const payload = {
-        action: "chat", 
-        chatHistory: this.state.chatHistory,
-        persona: this.state.persona,
-        scenario: this.state.scenario
-    };
+        try {
+            const response = await fetch(this.ENDPOINT_URL, {
+                method: "POST",
+                headers: { "Content-Type": "text/plain" },
+                body: JSON.stringify(payload)
+            });
+            const result = await response.json();
 
-    try {
-        // fetchを使って外部からGASへ通信します
-        const response = await fetch(endpointUrl, {
-            method: "POST",
-            // 💡重要：GASのセキュリティエラーを回避する魔法のおまじない
-            headers: { "Content-Type": "text/plain" },
-            body: JSON.stringify(payload)
-        });
-        
-        const result = await response.json();
+            if(result.status === "error") {
+                this.receiveAIMessage("エラー: " + result.message);
+                return;
+            }
 
-        if(result.status === "error") {
-            this.receiveAIMessage("エラー: " + result.message);
-            return;
+            this.receiveAIMessage(result.reply || "（返答を生成できませんでした）");
+            if (result.emotion) this.changeEmotion(result.emotion);
+            if (result.trustDiff !== undefined) this.changeTrust(Number(result.trustDiff));
+
+        } catch (err) {
+            console.error(err);
+            this.receiveAIMessage("エラー: 通信に失敗しました。");
+        } finally {
+            this.setVoiceStatus("🎤 ボタンを押して話す");
+            document.getElementById("voiceBtn").disabled = false;
         }
-
-        // 成功時の処理（AIの返答、感情、信頼度の更新）
-        this.receiveAIMessage(result.reply);
-        if (result.emotion) this.changeEmotion(result.emotion);
-        if (result.trustDiff !== undefined) this.changeTrust(Number(result.trustDiff));
-
-    } catch (err) {
-        console.error(err);
-        this.receiveAIMessage("エラー: 通信に失敗しました。");
-    } finally {
-        this.setVoiceStatus("🎤 話してください");
-        document.getElementById("voiceBtn").disabled = false;
-    }
     },
+
     receiveAIMessage(message){
         this.appendAIMessage(message);
         this.state.chatHistory.push({ role: "assistant", message: message, time: new Date().toISOString() });
-        this.setVoiceStatus("🎤 話してください");
+        this.setVoiceStatus("🎤 ボタンを押して話す");
         speakAIMessage(message);
         document.getElementById("voiceBtn").disabled = false;
     },
 
-    createDummyResponse(message){
-        const list = [
-            "なるほど、その点は気になります。",
-            "ありがとうございます。もう少し詳しく教えてください。",
-            "そのように考えているのですね。",
-            "保険については現在どのようにお考えですか？",
-            "ご家族とも相談されていますか？"
-        ];
-        return list[Math.floor(Math.random() * list.length)];
-    },
-
-    /*============================================
-      音声認識（Web Speech API）ベース実装
-    ============================================*/
-    startVoiceRecognition(){
-        if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-            alert("お使いのブラウザは音声認識に対応していません。Chromeをご利用ください。");
-            return;
-        }
-
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        const recognition = new SpeechRecognition();
-        
-        recognition.lang = 'ja-JP';
-        recognition.interimResults = false; // 確定した結果のみ取得
-        recognition.maxAlternatives = 1;
-
-        recognition.onstart = () => {
-            this.setVoiceStatus("🔴 音声を聞き取っています...");
-            document.getElementById("voiceBtn").classList.add("recording");
-        };
-
-        recognition.onresult = (event) => {
-            const transcript = event.results[0][0].transcript;
-            console.log("認識結果:", transcript);
-            this.sendMessage(transcript); // 認識したテキストをそのままチャットへ送信
-        };
-
-        recognition.onerror = (event) => {
-            console.error("音声認識エラー:", event.error);
-            this.setVoiceStatus("🎤 話してください (エラー発生)");
-        };
-
-        recognition.onend = () => {
-            document.getElementById("voiceBtn").classList.remove("recording");
-            if(this.state.rolePlay) {
-                // 返答待ちなどでなければ待機中に戻す
-                if(document.getElementById("voiceStatus").textContent.includes("🔴")) {
-                    this.setVoiceStatus("🎤 話してください");
-                }
-            }
-        };
-
-        recognition.start();
-    },
-
-    /*============================================
-      仮の評価ロジック
-    ============================================*/
     evaluateConversation(message){
         if(message.length > 40){
             this.changeTrust(3);
@@ -1265,43 +656,33 @@ async requestAIResponse(message) {
         this.changeEmotion("normal");
     },
 
-    /*============================================
-      カメラ・録画処理
-    ============================================*/
     async startCameraAndRecording() {
         try {
-            // カメラとマイクのアクセス許可を求める
-            const stream = await navigator.mediaDevices.getUserMedia({ video: false, audio: true });
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
             this.state.cameraStream = stream;
             
             const videoEl = document.getElementById("userVideo");
             const placeholder = document.getElementById("videoPlaceholder");
             const recStatus = document.getElementById("recordingStatus");
             
-            // 映像を画面に映す
             videoEl.srcObject = stream;
             videoEl.style.display = "block";
             placeholder.style.display = "none";
             recStatus.innerHTML = "🔴 録画中...";
             recStatus.style.color = "#d32f2f";
 
-            // 録画の準備
             this.state.recordedChunks = [];
             this.state.mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
             
-            // データが生成されるたびに箱（配列）に貯める
             this.state.mediaRecorder.ondataavailable = (event) => {
                 if (event.data.size > 0) {
                     this.state.recordedChunks.push(event.data);
                 }
             };
 
-            // 録画スタート（1秒ごとにデータを区切って保存）
             this.state.mediaRecorder.start(1000); 
-
         } catch (err) {
             console.error("カメラ起動エラー:", err);
-            alert("カメラまたはマイクへのアクセスが拒否されたか、デバイスが見つかりません。");
         }
     },
 
@@ -1310,31 +691,26 @@ async requestAIResponse(message) {
         const videoEl = document.getElementById("userVideo");
         const placeholder = document.getElementById("videoPlaceholder");
 
-        // ▼▼ ここから既存の関数の中に追記 ▼▼
-        // 録画データが存在する場合のみ、保存処理を呼び出す
         if (this.state.recordedChunks && this.state.recordedChunks.length > 0) {
             this.uploadVideoToGAS();
         }
 
-        // 録画を停止
         if (this.state.mediaRecorder && this.state.mediaRecorder.state !== "inactive") {
             this.state.mediaRecorder.stop();
         }
 
-        // カメラをオフにする
         if (this.state.cameraStream) {
             this.state.cameraStream.getTracks().forEach(track => track.stop());
             this.state.cameraStream = null;
         }
 
-        // 見た目を初期状態に戻す
         videoEl.style.display = "none";
         videoEl.srcObject = null;
         placeholder.style.display = "block";
-        recStatus.innerHTML = "⏹️ 録画待機中";
-        recStatus.style.color = "#555";
-        
-        // ※GAS（Googleドライブ）への送信処理は次のステップでここに追加します！
+        if(recStatus) {
+            recStatus.innerHTML = "⏹️ 録画待機中";
+            recStatus.style.color = "#555";
+        }
     },
 
     uploadVideoToGAS() {
@@ -1343,162 +719,148 @@ async requestAIResponse(message) {
             evalArea.innerHTML += "<br><div style='text-align:center; color:#2196F3; font-weight:bold;'>⏳ 録画データをGoogleドライブへ保存しています...</div>";
         }
 
-        // 細切れの録画データを1つの動画ファイルデータにまとめる
         const blob = new Blob(this.state.recordedChunks, { type: 'video/webm' });
         const reader = new FileReader();
         
-        // GASに送れる形式（Base64テキスト）に変換
         reader.readAsDataURL(blob);
-        reader.onloadend = () => {
+        reader.onloadend = async () => {
             const base64Data = reader.result;
-            // ファイル名にペルソナ名と現在時刻を入れて被らないようにする
             const filename = `ロープレ録画_${this.state.persona ? this.state.persona.名前 : "不明"}_${new Date().getTime()}.webm`;
 
-            // GASのURLへ動画データを包んで送る
-const response = await fetch(this.ENDPOINT_URL, {
-    method: "POST",
-    headers: { "Content-Type": "text/plain" },
-    body: JSON.stringify({ 
-        action: "uploadVideo", // 「動画を保存して」という目印
-        videoData: base64Data, // 動画本体
-        filename: filename     // ファイル名
-    })
-});
-    // ▲▲ 新規追加ここまで ▲▲
+            try {
+                const response = await fetch(this.ENDPOINT_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "text/plain" },
+                    body: JSON.stringify({ 
+                        action: "uploadVideo",
+                        videoData: base64Data,
+                        filename: filename
+                    })
+                });
+                const res = await response.json();
+                
+                if(res.status === "success") {
+                    if(evalArea) evalArea.innerHTML += `<div style='text-align:center; padding: 10px; margin-top:10px; background-color:#e8f5e9; border-radius:8px; color:#4CAF50;'>✅ 動画を保存しました！<br><a href="${res.url}" target="_blank" style="color:#4CAF50; text-decoration:underline;">📺 録画を確認する</a></div>`;
+                } else {
+                    if(evalArea) evalArea.innerHTML += `<div style='text-align:center; color:red;'>❌ 動画保存エラー: ${res.message}</div>`;
+                }
+            } catch(err) {
+                if(evalArea) evalArea.innerHTML += `<div style='text-align:center; color:red;'>❌ 通信エラー: 動画を保存できませんでした。</div>`;
+            }
+        };
+    },
 
-   /*============================================
-      フロー制御（開始・終了・リセット）
-    ============================================*/
     startRolePlay(){
         this.state.rolePlay = true;
         this.clearChat();
         this.startTimer();
         this.updateButtons();
         this.showWelcomeMessage();
-        this.setVoiceStatus("🎤 話してください");
+        this.setVoiceStatus("🎤 ボタンを押して話す");
         this.startCameraAndRecording();
     },
 
-// --- 音声認識の初期化 ---
-initSpeech() {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SpeechRecognition) {
-        alert("お使いのブラウザは音声認識に対応していません。Google Chrome をご利用ください。");
-        return;
-    }
-
-    this.recognition = new SpeechRecognition();
-    this.recognition.lang = 'ja-JP';        // 日本語認識
-    this.recognition.interimResults = false; // 途中経過ではなく確定テキストのみ取得
-    this.recognition.continuous = false;     // 1回の発言ごとに停止
-
-    // 音声認識が開始されたとき
-    this.recognition.onstart = () => {
-        this.state.isListening = true;
-        this.setVoiceStatus("🎤 お話しください（聞き取り中...）");
-        document.getElementById("voiceBtn").classList.add("listening"); // ボタンの見た目を変更（必要に応じてCSS適用）
-    };
-
-    // 音声を正常に認識できたとき
-    this.recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        console.log("認識された音声:", transcript);
-        
-        // 自分の発言として画面のチャットエリアに表示
-        this.addChatMessage("user", transcript);
-
-        // そのまま AI にメッセージを送信
-        this.requestAIResponse(transcript);
-    };
-
-    // エラーが発生したとき
-    this.recognition.onerror = (event) => {
-        console.error("音声認識エラー:", event.error);
-        if (event.error === 'not-allowed') {
-            alert("マイクの使用が許可されていません。ブラウザのアドレスバー付近からマイクを許可してください。");
+    initSpeech() {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+            alert("お使いのブラウザは音声認識に対応していません。Google Chrome をご利用ください。");
+            return;
         }
-        this.setVoiceStatus("⚠️ 音声認識エラーが発生しました");
-        this.stopListening();
-    };
 
-    // 音声認識が終了したとき
-    this.recognition.onend = () => {
-        this.stopListening();
-    };
-},
+        this.recognition = new SpeechRecognition();
+        this.recognition.lang = 'ja-JP';        
+        this.recognition.interimResults = false; 
+        this.recognition.continuous = false;     
 
-// --- マイクボタンを押したときの切り替え ---
-toggleVoice() {
-    if (!this.recognition) {
-        this.initSpeech();
-    }
-
-    if (this.state.isListening) {
-        this.recognition.stop();
-    } else {
-        try {
-            this.recognition.start();
-        } catch (e) {
-            console.error("音声認識スタートエラー:", e);
-        }
-    }
-},
-
-// --- 認識停止時の処理 ---
-stopListening() {
-    this.state.isListening = false;
-    document.getElementById("voiceBtn").disabled = false;
-    document.getElementById("voiceBtn").classList.remove("listening");
-    if (!this.state.isThinking) {
-        this.setVoiceStatus("🎤 ボタンを押して話す");
-    }
-},
-
-async endRolePlay() {
-    this.state.rolePlay = false;
-    this.stopTimer();
-    this.updateButtons();
-    this.stopCameraAndRecording();
-    
-    const evalArea = document.getElementById("evaluationArea");
-    if(evalArea) {
-        evalArea.innerHTML = "<div style='text-align:center; padding:20px; color:#4CAF50;'>🤖 採点中...</div>";
-    }
-    this.setVoiceStatus("🤖 評価中...");
-
-    if (this.state.mode === "trace") {
-        this.evaluateTraceMode();
-    } else {
-        // フリーモードの評価を外部からGASへリクエストする
-        const endpointUrl = "ここに取得したURLを貼り付ける"; // 先ほどと同じURL
-        
-        // action: "evaluate" という目印をつけて送ります
-        const payload = {
-            action: "evaluate",
-            chatHistory: this.state.chatHistory,
-            persona: this.state.persona,
-            goals: this.state.goals
+        this.recognition.onstart = () => {
+            this.state.isListening = true;
+            this.setVoiceStatus("🔴 お話しください（聞き取り中...）");
         };
 
-        try {
-            const response = await fetch(endpointUrl, {
-                method: "POST",
-                headers: { "Content-Type": "text/plain" },
-                body: JSON.stringify(payload)
-            });
-            
-            const result = await response.json();
-            this.displayEvaluation(result); // 評価結果を画面に表示
-            
-        } catch (err) {
-            console.error(err);
-            if(evalArea) evalArea.innerHTML = "エラーが発生しました。";
-        }
-},
+        this.recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            this.sendMessage(transcript);
+        };
 
-    // ▼▼ 新規追加：トレースモード用の一字一句チェック採点 ▼▼
+        this.recognition.onerror = (event) => {
+            console.error("音声認識エラー:", event.error);
+            if (event.error === 'not-allowed') {
+                alert("マイクの使用が許可されていません。ブラウザのアドレスバー付近からマイクを許可してください。");
+            }
+            this.setVoiceStatus("⚠️ 音声認識エラーが発生しました");
+            this.stopListening();
+        };
+
+        this.recognition.onend = () => {
+            this.stopListening();
+        };
+    },
+
+    toggleVoice() {
+        if (!this.recognition) {
+            this.initSpeech();
+        }
+
+        if (this.state.isListening) {
+            this.recognition.stop();
+        } else {
+            try {
+                this.recognition.start();
+            } catch (e) {
+                console.error("音声認識スタートエラー:", e);
+            }
+        }
+    },
+
+    stopListening() {
+        this.state.isListening = false;
+        document.getElementById("voiceBtn").disabled = false;
+        document.getElementById("voiceBtn").classList.remove("listening");
+        if (!document.getElementById("voiceBtn").disabled) {
+            this.setVoiceStatus("🎤 ボタンを押して話す");
+        }
+    },
+
+    async endRolePlay() {
+        this.state.rolePlay = false;
+        this.stopTimer();
+        this.updateButtons();
+        this.stopCameraAndRecording();
+        
+        const evalArea = document.getElementById("evaluationArea");
+        if(evalArea) {
+            evalArea.innerHTML = "<div style='text-align:center; padding:20px; color:#4CAF50;'>🤖 採点中...</div>";
+        }
+        this.setVoiceStatus("🤖 評価中...");
+
+        if (this.state.mode === "trace") {
+            this.evaluateTraceMode();
+        } else {
+            const payload = {
+                action: "evaluate",
+                chatHistory: this.state.chatHistory,
+                persona: this.state.persona,
+                goals: this.state.goals
+            };
+
+            try {
+                const response = await fetch(this.ENDPOINT_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "text/plain" },
+                    body: JSON.stringify(payload)
+                });
+                
+                const result = await response.json();
+                this.displayEvaluation(result); 
+                
+            } catch (err) {
+                console.error(err);
+                if(evalArea) evalArea.innerHTML = "エラーが発生しました。";
+            }
+        }
+    },
+
     evaluateTraceMode() {
-        // ユーザーの発言だけを抽出
         const userMessages = this.state.chatHistory.filter(msg => msg.role === "user");
         const traceData = this.state.traceData;
 
@@ -1506,14 +868,11 @@ async endRolePlay() {
         let details = "";
         const maxSteps = traceData.length;
 
-        // 記号（、。！？）や空白を取り除いて純粋な文字だけで比較するための仕組み
-        // ※音声認識が「。」を付け忘れても減点されないようにするための工夫です
         const normalizeText = (text) => {
             if(!text) return "";
             return text.replace(/[、。！？\s ]/g, ""); 
         };
 
-        // 1ステップずつ、お手本と実際の発言を照らし合わせる
         for (let i = 0; i < maxSteps; i++) {
             const targetText = traceData[i].模範トーク || "";
             const targetNorm = normalizeText(targetText);
@@ -1523,11 +882,9 @@ async endRolePlay() {
                 const userNorm = normalizeText(userText);
 
                 if (targetNorm === userNorm) {
-                    // 一字一句完全に一致した場合
                     matchCount++;
                     details += `✅ ステップ${i+1}：完璧です！\n`;
                 } else {
-                    // 一致しなかった場合（どこが間違っていたかを表示）
                     details += `❌ ステップ${i+1}：\n 【お手本】${targetText}\n 【あなたの発言】${userText}\n\n`;
                 }
             } else {
@@ -1535,10 +892,8 @@ async endRolePlay() {
             }
         }
 
-        // 100点満点でスコア計算
         const score = maxSteps > 0 ? Math.round((matchCount / maxSteps) * 100) : 0;
 
-        // 点数に応じたコメントの出し分け
         let generalComment = "";
         if (score === 100) {
             generalComment = "素晴らしいです！一字一句完璧にトレースできています。この調子でトークを体に染み込ませましょう！";
@@ -1548,7 +903,6 @@ async endRolePlay() {
             generalComment = "お手本と異なる発言が多かったようです。まずはスクリプトをしっかり読んで、声に出す練習を繰り返しましょう！";
         }
 
-        // 今までと同じ評価レポートの形式（フォーマット）にデータを流し込む
         const result = {
             score: score,
             goodPoints: maxSteps > 0 ? `${maxSteps}ステップ中、${matchCount}ステップで完璧なトレースができました。` : "まずは最後まで発言してみましょう。",
@@ -1556,7 +910,6 @@ async endRolePlay() {
             generalComment: generalComment
         };
 
-        // 画面に表示
         this.displayEvaluation(result);
     },
 
@@ -1573,7 +926,6 @@ async endRolePlay() {
         this.setVoiceStatus("🎤 待機中");
         this.stopCameraAndRecording();
         
-        // リセット時に評価エリアの表示も消す
         const evalArea = document.getElementById("evaluationArea");
         if(evalArea) evalArea.innerHTML = "";
         this.state.currentTraceIndex = 0;
@@ -1586,89 +938,71 @@ async endRolePlay() {
         const evalArea = document.getElementById("evaluationArea");
         if(!evalArea) return;
 
-        // エラー等で結果が取れなかった場合の安全対策
         if(!result) {
             evalArea.innerHTML = "<div style='color:red;'>評価データの取得に失敗しました。</div>";
             return;
         }
 
-        // 白・緑を基調に、黄色を差し色にした評価レポートのデザイン
         const html = `
           <div style="background-color: #ffffff; border: 2px solid #4CAF50; border-radius: 8px; padding: 20px; margin-top: 20px;">
             <h3 style="color: #4CAF50; margin-top: 0;">AI教官の評価レポート</h3>
             
             <div style="text-align: center; margin-bottom: 20px;">
               <span style="font-size: 1.2em; color: #555;">総合スコア</span><br>
-              <span style="font-size: 3em; font-weight: bold; color: #FFC107;">${result.score}</span>
+              <span style="font-size: 3em; font-weight: bold; color: #FFC107;">${result.score || 0}</span>
               <span style="font-size: 1.5em; color: #555;">/ 100点</span>
             </div>
 
             <div style="margin-bottom: 15px;">
               <h4 style="border-bottom: 2px solid #FFC107; color: #333; padding-bottom: 5px;">🌟 良かった点</h4>
-              <p style="white-space: pre-wrap; color: #555;">${result.goodPoints}</p>
+              <p style="white-space: pre-wrap; color: #555;">${result.goodPoints || "データなし"}</p>
             </div>
 
             <div style="margin-bottom: 15px;">
               <h4 style="border-bottom: 2px solid #4CAF50; color: #333; padding-bottom: 5px;">📈 改善点</h4>
-              <p style="white-space: pre-wrap; color: #555;">${result.improvementPoints}</p>
+              <p style="white-space: pre-wrap; color: #555;">${result.improvementPoints || "データなし"}</p>
             </div>
 
             <div>
               <h4 style="border-bottom: 2px solid #4CAF50; color: #333; padding-bottom: 5px;">💬 総合コメント</h4>
-              <p style="white-space: pre-wrap; color: #555;">${result.generalComment}</p>
+              <p style="white-space: pre-wrap; color: #555;">${result.generalComment || result.aiAdvice || "データなし"}</p>
             </div>
           </div>
         `;
 
         evalArea.innerHTML = html;
     }
-}; // ← 【重要】ここで APP オブジェクトが完全に閉じます
+};
 
-/*************************************************
- * 起動
- *************************************************/
 window.addEventListener("load", () => {
     APP.initialize();
 });
 
-// --- AIのテキストを音声で読み上げる関数（APPの外側でOK） ---
 function speakAIMessage(text) {
   if ('speechSynthesis' in window) {
     window.speechSynthesis.cancel();
-    
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'ja-JP';
-    
-    // ▼少しゆっくり・自然な高さに調整
     utterance.rate = 1.0; 
     utterance.pitch = 1.0; 
 
-    // ▼ブラウザに搭載されている声のリストを取得
     const voices = window.speechSynthesis.getVoices();
-    
-    // ▼「Google 日本語」などの自然なクラウド音声を探す
     const bestVoice = voices.find(voice => voice.name === 'Google 日本語') 
                    || voices.find(voice => voice.name.includes('Google') && voice.lang === 'ja-JP')
-                   || voices.find(voice => voice.lang === 'ja-JP'); // 見つからなければ標準の日本語
+                   || voices.find(voice => voice.lang === 'ja-JP'); 
 
     if (bestVoice) {
       utterance.voice = bestVoice;
     }
-
     window.speechSynthesis.speak(utterance);
   } else {
     console.log("このブラウザは音声合成に対応していません。");
   }
 }
 
-// ※音声リストをあらかじめ読み込んでおくためのおまじない
 if ('speechSynthesis' in window) {
     window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
 }
 </script>
-
-</script>
-
 </body>
-
 </html>
