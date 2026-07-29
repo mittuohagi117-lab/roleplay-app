@@ -99,6 +99,28 @@
                 <option value="男性">男性</option>
                 <option value="女性">女性</option>
             </select>
+
+            <!-- ▼▼ ここから追加：家族構成のプルダウン ▼▼ -->
+            <select id="selectFamily" style="padding: 8px; border-radius: 4px; border: 1px solid #ccc; background-color: #fafafa; color: #333;">
+                <option value="all">家族構成すべて</option>
+                <option value="独身">独身</option>
+                <option value="既婚・子なし">既婚・子なし</option>
+                <option value="既婚・子あり">既婚・子あり</option>
+                <!-- ※スプレッドシートに入力している実際の文字に合わせてください -->
+            </select>
+            <!-- ▲▲ 追加ここまで ▲▲ -->
+
+            <!-- ▼▼ ここから追加：加入状況のプルダウン ▼▼ -->
+            <select id="selectInsurance" style="padding: 8px; border-radius: 4px; border: 1px solid #ccc; background-color: #fafafa; color: #333;">
+                <option value="all">加入状況すべて</option>
+                <option value="未加入">未加入</option>
+                <option value="医療保障のみ">医療保障のみ</option>
+                <option value="死亡保障・医療保障">死亡保障・医療保障</option>
+                <option value="終身死亡保障">終身死亡保障</option>
+                <option value="役職員共済">役職員共済</option>
+                <!-- ※スプレッドシートに入力している実際の文字に合わせてください -->
+            </select>
+            <!-- ▲▲ 追加ここまで ▲▲ -->
             <div id="personaSearchResult" style="color: #FFC107; font-weight: bold; font-size: 0.9em; min-width: 120px;"></div>
         </div>
 
