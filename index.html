@@ -11,7 +11,6 @@
     <title>AI営業ロールプレイシステム</title>
 
     <!-- CSS -->
-    <?!= include("style"); ?>
 
     <!-- Google Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
@@ -724,7 +723,7 @@ footer button{padding:12px 20px;border:none;border-radius:8px;background:var(--m
 <!-- JavaScript -->
 <!-- ========================================= -->
 
-<?!= include("script"); ?>
+
 <script>
 /*************************************************
  *
@@ -896,36 +895,16 @@ const APP = {
       マスターデータ読込
     ============================================*/
     loadMasterData(){
-        google.script.run
-            .withSuccessHandler((response) => {
-                if (response.status === "success") {
-                    const data = response.data;
-                    
-                    // ▼▼ ここが重要：全員分のデータを保存する ▼▼
-                    this.state.personaList = data.personaList || []; 
-                    this.state.traceData = data.traceData || [];
-                    
-                    if(this.state.personaList.length > 0) {
-                        this.state.persona = this.state.personaList[0]; 
-                    } else {
-                        this.state.persona = { 名前: "該当なし", 年代: "-", 性別: "-", 職業: "-", 家族構成: "-", 加入状況: "-", 性格: "-", 難易度: "-" };
-                    }
-                    this.displayPersona(this.state.persona);
-                    
-                    this.state.scenario = data.scenario;
-                    this.displayScenario(data.scenario);
-                    this.state.goals = data.goals;
-                    this.displayGoals(data.goals);
-                    this.hideLoading();
-                } else {
-                    this.showError("初期データの取得に失敗しました: " + response.message);
-                }
-            })
-            .withFailureHandler((error) => {
-                this.showError("サーバーとの通信に失敗しました: " + error);
-            })
-            .getInitialMasterData();
-    },
+       // GASのURLへ動画データを包んで送る
+const response = await fetch(this.ENDPOINT_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain" },
+    body: JSON.stringify({ 
+        action: "uploadVideo", // 「動画を保存して」という目印
+        videoData: base64Data, // 動画本体
+        filename: filename     // ファイル名
+    })
+});
 
     /*============================================
       表示系・UI操作
@@ -1199,7 +1178,6 @@ async requestAIResponse(message) {
         this.setVoiceStatus("🎤 話してください");
         document.getElementById("voiceBtn").disabled = false;
     }
-}
     },
     receiveAIMessage(message){
         this.appendAIMessage(message);
@@ -1376,20 +1354,16 @@ async requestAIResponse(message) {
             // ファイル名にペルソナ名と現在時刻を入れて被らないようにする
             const filename = `ロープレ録画_${this.state.persona ? this.state.persona.名前 : "不明"}_${new Date().getTime()}.webm`;
 
-            google.script.run
-                .withSuccessHandler((res) => {
-                    if(res.status === "success") {
-                        if(evalArea) evalArea.innerHTML += `<div style='text-align:center; padding: 10px; margin-top:10px; background-color:#e8f5e9; border-radius:8px; color:#4CAF50;'>✅ 動画を保存しました！<br><a href="${res.url}" target="_blank" style="color:#4CAF50; text-decoration:underline;">📺 録画を確認する</a></div>`;
-                    } else {
-                        if(evalArea) evalArea.innerHTML += `<div style='text-align:center; color:red;'>❌ 動画保存エラー: ${res.message}</div>`;
-                    }
-                })
-                .withFailureHandler((err) => {
-                    if(evalArea) evalArea.innerHTML += `<div style='text-align:center; color:red;'>❌ 通信エラー: 動画を保存できませんでした。</div>`;
-                })
-                .saveVideoToDrive(base64Data, filename);
-        };
-    },
+            // GASのURLへ動画データを包んで送る
+const response = await fetch(this.ENDPOINT_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain" },
+    body: JSON.stringify({ 
+        action: "uploadVideo", // 「動画を保存して」という目印
+        videoData: base64Data, // 動画本体
+        filename: filename     // ファイル名
+    })
+});
     // ▲▲ 新規追加ここまで ▲▲
 
    /*============================================
@@ -1520,8 +1494,7 @@ async endRolePlay() {
             console.error(err);
             if(evalArea) evalArea.innerHTML = "エラーが発生しました。";
         }
-    }
-}
+},
 
     // ▼▼ 新規追加：トレースモード用の一字一句チェック採点 ▼▼
     evaluateTraceMode() {
