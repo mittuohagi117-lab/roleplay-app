@@ -280,7 +280,25 @@ const APP = {
         
         document.getElementById("selectAge").addEventListener("change", () => this.changePersonaByCondition());
         document.getElementById("selectGender").addEventListener("change", () => this.changePersonaByCondition());
-        
+        document.addEventListener("keydown", (e) => {
+            // 押されたキーがスペースキーだった場合
+            if (e.code === "Space") {
+                // チャットや営業メモの入力欄で文字を打っている時はショートカットを無効にする
+                if (document.activeElement.tagName === "INPUT" || document.activeElement.tagName === "TEXTAREA") {
+                    return; 
+                }
+                
+                // ロープレ中のみ反応させる
+                if (this.state.rolePlay) {
+                    e.preventDefault(); // 画面が下にスクロールしてしまう標準機能を防ぐ
+                    
+                    // 長押しで連続して何度もボタンが押された判定になるのを防ぐ
+                    if (!e.repeat) { 
+                        this.toggleVoice(); // 「話す」ボタンを押したのと同じ処理を呼び出す
+                    }
+                }
+            }
+        });
         this.updateButtons();
     },
 
