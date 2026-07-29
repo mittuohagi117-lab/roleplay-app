@@ -1200,11 +1200,6 @@ async requestAIResponse(message) {
         document.getElementById("voiceBtn").disabled = false;
     }
 }
-            .processChatRequest(
-                this.state.chatHistory, 
-                this.state.persona, 
-                this.state.scenario
-            );
     },
     receiveAIMessage(message){
         this.appendAIMessage(message);
