@@ -86,6 +86,9 @@
 
 <div class="container">
     <header>
+        <div id="welcomeMessage" style="font-weight: bold; color: #4CAF50; margin-bottom: 10px; text-align: left;">
+    <!-- ここに「ようこそ 〇〇さん」が表示されます -->
+</div>
         <div class="headerLeft">
             <h1 style="margin: 0; font-size: 1.5rem;">🌿 AI営業ロールプレイ</h1>
             <div id="systemVersion" style="font-size: 0.8rem;">Version 2.0</div>
@@ -1131,6 +1134,15 @@ function checkAndLogin() {
 
 checkAndLogin();
 // ▲▲ 追加ここまで ▲▲
+    // ▼▼ ようこそメッセージを表示する関数 ▼▼
+function updateWelcomeMessage() {
+    const userName = localStorage.getItem("userName");
+    const welcomeEl = document.getElementById("welcomeMessage");
+    
+    if (userName && welcomeEl) {
+        welcomeEl.textContent = `ようこそ ${userName} さん`;
+    }
+}
 </script>
 
 </body>
