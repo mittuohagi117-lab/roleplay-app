@@ -57,6 +57,30 @@
     </div>
 </div>
 
+<!-- ▼▼ ここから追加：ログイン用ポップアップ画面 ▼▼ -->
+    <div id="loginModal" style="display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(5px);">
+        <div style="background: white; padding: 40px; border-radius: 12px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+            <h2 style="color: #4CAF50; margin-top: 0; margin-bottom: 10px;">ログイン</h2>
+            <p style="font-size: 0.9em; color: #555; margin-bottom: 25px;">社員番号とお名前を入力して開始してください。</p>
+            
+            <div style="text-align: left; margin-bottom: 15px;">
+                <label style="font-size: 0.85em; font-weight: bold; color: #333;">社員番号</label>
+                <input type="text" id="loginUserId" placeholder="例: 1001" style="width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 1em;">
+            </div>
+            
+            <div style="text-align: left; margin-bottom: 25px;">
+                <label style="font-size: 0.85em; font-weight: bold; color: #333;">お名前</label>
+                <input type="text" id="loginUserName" placeholder="例: 佐藤 太郎" style="width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 1em;">
+            </div>
+            
+            <button id="loginBtn" style="background-color: #4CAF50; color: white; border: none; padding: 15px; border-radius: 6px; cursor: pointer; width: 100%; font-size: 1.1em; font-weight: bold; transition: background-color 0.3s;">
+                ログインして開始
+            </button>
+            <div id="loginMessage" style="color: #F44336; margin-top: 15px; font-size: 0.9em; font-weight: bold;"></div>
+        </div>
+    </div>
+    <!-- ▲▲ 追加ここまで ▲▲ -->
+
 <!-- エラー表示 -->
 <div id="errorMessage" class="hidden" style="color: red; padding: 20px; text-align: center;"></div>
 
@@ -881,6 +905,7 @@ const APP = {
                 chatHistory: this.state.chatHistory,
                 persona: this.state.persona,
                 goals: this.state.goals
+                userId: localStorage.getItem("userId")
             };
 
             try {
@@ -1043,6 +1068,70 @@ function speakAIMessage(text) {
 if ('speechSynthesis' in window) {
     window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
 }
-</script>
+
+// ▼▼ ここから追加：ログイン処理を管理するコード ▼▼
+function checkAndLogin() {
+    const loginModal = document.getElementById("loginModal");
+    const loginBtn = document.getElementById("loginBtn");
+    const msg = document.getElementById("loginMessage");
+    
+    // ブラウザに保存されているIDがあるかチェック
+    const savedUserId = localStorage.getItem("userId");
+    
+    if (savedUserId) {
+        loginModal.style.display = "none";
+        console.log("ログイン済み: " + savedUserId);
+    } else {
+        loginBtn.addEventListener("click", async () => {
+            const userId = document.getElementById("loginUserId").value.trim();
+            const userName = document.getElementById("loginUserName").value.trim();
+            
+            if (!userId || !userName) {
+                msg.textContent = "社員番号とお名前を両方入力してください。";
+                return;
+            }
+            
+            msg.textContent = "認証中...";
+            loginBtn.disabled = true;
+            loginBtn.style.backgroundColor = "#ccc";
+
+            try {
+                // ★修正：APP.ENDPOINT_URLに変更
+                const response = await fetch(APP.ENDPOINT_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        action: "login",
+                        userId: userId,
+                        name: userName
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === "success") {
+                    localStorage.setItem("userId", userId);
+                    localStorage.setItem("userName", userName);
+                    loginModal.style.display = "none";
+                    msg.textContent = "";
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                msg.textContent = "エラーが発生しました: " + error.message;
+                loginBtn.disabled = false;
+                loginBtn.style.backgroundColor = "#4CAF50";
+            }
+        });
+    }
+}
+
+// 画面が読み込まれたら最初にログインチェックを走らせる
+window.addEventListener('DOMContentLoaded', () => {
+    checkAndLogin();
+});
+// ▲▲ 追加ここまで ▲▲
+</script> <!-- ←もともとある閉じタグ -->
+
 </body>
 </html>
