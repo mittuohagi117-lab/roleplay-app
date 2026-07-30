@@ -1070,12 +1070,12 @@ if ('speechSynthesis' in window) {
 }
 
 // ▼▼ ここから追加：ログイン処理を管理するコード ▼▼
+// ▼▼ ここから追加：ログイン処理を管理するコード ▼▼
 function checkAndLogin() {
     const loginModal = document.getElementById("loginModal");
     const loginBtn = document.getElementById("loginBtn");
     const msg = document.getElementById("loginMessage");
     
-    // ブラウザに保存されているIDがあるかチェック
     const savedUserId = localStorage.getItem("userId");
     
     if (savedUserId) {
@@ -1096,7 +1096,6 @@ function checkAndLogin() {
             loginBtn.style.backgroundColor = "#ccc";
 
             try {
-                // ★修正：APP.ENDPOINT_URLに変更
                 const response = await fetch(APP.ENDPOINT_URL, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -1126,10 +1125,9 @@ function checkAndLogin() {
     }
 }
 
-// 画面が読み込まれたら最初にログインチェックを走らせる
-    checkAndLogin();
+checkAndLogin();
 // ▲▲ 追加ここまで ▲▲
-</script> <!-- ←もともとある閉じタグ -->
+</script>
 
 </body>
 </html>
