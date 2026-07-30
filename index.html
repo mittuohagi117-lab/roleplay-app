@@ -1098,7 +1098,7 @@ function checkAndLogin() {
             try {
                 const response = await fetch(APP.ENDPOINT_URL, {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: { "Content-Type": "text/plain" },
                     body: JSON.stringify({
                         action: "login",
                         userId: userId,
