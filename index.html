@@ -430,7 +430,7 @@ const APP = {
 
     async loadMasterData(){
         try {
-            const response = await fetch(this.ENDPOINT_URL, {
+            const response = await fetch(APP.ENDPOINT_URL, {
                 method: "POST",
                 headers: { "Content-Type": "text/plain" },
                 body: JSON.stringify({ action: "init" })
@@ -676,7 +676,7 @@ const APP = {
         };
 
         try {
-            const response = await fetch(this.ENDPOINT_URL, {
+            const response = await fetch(APP.ENDPOINT_URL, {
                 method: "POST",
                 headers: { "Content-Type": "text/plain" },
                 body: JSON.stringify(payload)
@@ -800,7 +800,7 @@ const APP = {
             const filename = `ロープレ録画_${this.state.persona ? this.state.persona.名前 : "不明"}_${new Date().getTime()}.webm`;
 
             try {
-                const response = await fetch(this.ENDPOINT_URL, {
+                const response = await fetch(APP.ENDPOINT_URL, {
                     method: "POST",
                     headers: { "Content-Type": "text/plain" },
                     body: JSON.stringify({ 
@@ -917,7 +917,7 @@ const APP = {
             };
 
             try {
-                const response = await fetch(this.ENDPOINT_URL, {
+                const response = await fetch(APP.ENDPOINT_URL, {
                     method: "POST",
                     headers: { "Content-Type": "text/plain" },
                     body: JSON.stringify(payload)
