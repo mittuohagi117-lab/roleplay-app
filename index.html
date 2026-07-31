@@ -1078,7 +1078,6 @@ if ('speechSynthesis' in window) {
 }
 
 // ▼▼ ここから追加：ログイン処理を管理するコード ▼▼
-// ▼▼ ここから追加：ログイン処理を管理するコード ▼▼
 function checkAndLogin() {
     const loginModal = document.getElementById("loginModal");
     const loginBtn = document.getElementById("loginBtn");
@@ -1089,31 +1088,36 @@ function checkAndLogin() {
     if (savedUserId) {
         loginModal.style.display = "none";
         console.log("ログイン済み: " + savedUserId);
+        
+        // ★修正：ログイン済みだった場合にここで呼び出します
+        updateWelcomeMessage(); 
+        
     } else {
         loginBtn.addEventListener("click", async () => {
             const userId = document.getElementById("loginUserId").value.trim();
             const userName = document.getElementById("loginUserName").value.trim();
             
             if (!userId || !userName) {
-                msg.textContent = "社員番号とお名前を両方入力してください。";
+                msg.textContent = "社員番号とお名前を入力してください。";
                 return;
             }
             
-            msg.textContent = "認証中...";
             loginBtn.disabled = true;
             loginBtn.style.backgroundColor = "#ccc";
-
+            msg.textContent = "ログイン中...";
+            
+            const payload = {
+                action: "login",
+                userId: userId,
+                name: userName
+            };
+            
             try {
                 const response = await fetch(APP.ENDPOINT_URL, {
                     method: "POST",
                     headers: { "Content-Type": "text/plain" },
-                    body: JSON.stringify({
-                        action: "login",
-                        userId: userId,
-                        name: userName
-                    })
+                    body: JSON.stringify(payload)
                 });
-                
                 const result = await response.json();
                 
                 if (result.status === "success") {
@@ -1121,6 +1125,10 @@ function checkAndLogin() {
                     localStorage.setItem("userName", userName);
                     loginModal.style.display = "none";
                     msg.textContent = "";
+                    
+                    // ★修正：新しくログインが成功した場合にここで呼び出します
+                    updateWelcomeMessage();
+                    
                 } else {
                     throw new Error(result.message);
                 }
@@ -1133,9 +1141,10 @@ function checkAndLogin() {
     }
 }
 
+// 最初にログインチェックを実行
 checkAndLogin();
-// ▲▲ 追加ここまで ▲▲
-    // ▼▼ ようこそメッセージを表示する関数 ▼▼
+
+// ▼▼ ようこそメッセージを表示する関数 ▼▼
 function updateWelcomeMessage() {
     const userName = localStorage.getItem("userName");
     const welcomeEl = document.getElementById("welcomeMessage");
@@ -1145,6 +1154,5 @@ function updateWelcomeMessage() {
     }
 }
 </script>
-
 </body>
 </html>
