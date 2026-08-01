@@ -703,9 +703,9 @@ const APP = {
 
     receiveAIMessage(message){
         this.appendAIMessage(message);
+        playAIVoice(message);
         this.state.chatHistory.push({ role: "assistant", message: message, time: new Date().toISOString() });
         this.setVoiceStatus("🎤 ボタンを押して話す");
-        speakAIMessage(message);
         document.getElementById("voiceBtn").disabled = false;
     },
 
@@ -1152,6 +1152,41 @@ function updateWelcomeMessage() {
     if (userName && welcomeEl) {
         welcomeEl.textContent = `ようこそ ${userName} さん`;
     }
+}
+/**
+ * ========================================================
+ * 音声再生処理（Google Cloud TTS呼び出し）
+ * ========================================================
+ */
+async function playAIVoice(text) {
+  try {
+    // ※ エンドポイントURLは、現在チャットなどを送っている変数（例: APP.ENDPOINT_URL など）に置き換えてください。
+    const endpointUrl = APP.ENDPOINT_URL; 
+
+    // GASに「テキストを音声にして！」とお願いする
+    const response = await fetch(endpointUrl, {
+      method: "POST",
+      // GASのdoPostで受け取るため、ヘッダーは他の通信と揃えます
+      headers: { "Content-Type": "application/x-www-form-urlencoded" }, 
+      body: JSON.stringify({
+        action: "getAudio",
+        text: text
+      })
+    });
+
+    const data = await response.json();
+
+    // 音声データが正常に返ってきたら再生する
+    if (data.audioBase64) {
+      const audioSrc = "data:audio/mp3;base64," + data.audioBase64;
+      const audio = new Audio(audioSrc);
+      audio.play(); // スピーカーから音声が流れます！
+    } else if (data.error) {
+      console.error("音声の取得に失敗しました:", data.error);
+    }
+  } catch (error) {
+    console.error("音声通信エラー:", error);
+  }
 }
 </script>
 </body>
