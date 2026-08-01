@@ -1158,7 +1158,7 @@ function updateWelcomeMessage() {
  * 音声再生処理（Google Cloud TTS呼び出し）
  * ========================================================
  */
-async function playAIVoice(text) {
+async function playAIVoice(text, persona) {
   try {
     // ※ エンドポイントURLは、現在チャットなどを送っている変数（例: APP.ENDPOINT_URL など）に置き換えてください。
     const endpointUrl = APP.ENDPOINT_URL; 
