@@ -1176,6 +1176,7 @@ async function playAIVoice(text) {
     });
 
     const data = await response.json();
+    console.log("TTSレスポンス確認:", data);
 
     // 音声データが正常に返ってきたら再生する
     if (data.audioBase64) {
