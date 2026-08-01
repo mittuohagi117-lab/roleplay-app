@@ -222,6 +222,35 @@
                             <span class="material-icons" style="font-size: 3rem;">videocam_off</span><br>
                             <span>ロープレ開始時に<br>カメラが起動します</span>
                         </div>
+                         <!-- ② 操作ボタン群（縦並び・スクロール不要） -->
+            <!-- ① ウェブカメラプレビュー（※ご自身の実際のプレビュー部分のコード） -->
+            <div class="bg-black rounded-xl aspect-video relative overflow-hidden shadow-md">
+                <video id="webcam" class="w-full h-full object-cover" autoplay playsinline muted></video>
+                <div class="absolute bottom-2 left-2 text-white text-xs bg-black/60 px-2 py-1 rounded">
+                    <i class="fa-solid fa-camera mr-1"></i> カメラプレビュー
+                </div>
+            </div>
+
+            <!-- ★ ここから追加：カメラ直下の縦並びボタン群 ★ -->
+            <div class="flex flex-col gap-3 mt-4">
+                <!-- ロープレ開始ボタン -->
+                <button id="startRoleplay" class="w-full py-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded shadow transition-colors flex justify-center items-center">
+                    <i class="fa-solid fa-play mr-2"></i>ロープレ開始
+                </button>
+
+                <!-- ロープレ終了ボタン -->
+                <button id="endRoleplay" class="w-full py-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded shadow transition-colors flex justify-center items-center">
+                    <i class="fa-solid fa-stop mr-2"></i>ロープレ終了
+                </button>
+
+                <!-- リセットボタン -->
+                <button id="resetRoleplay" class="w-full py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded shadow transition-colors flex justify-center items-center">
+                    <i class="fa-solid fa-arrows-rotate mr-2"></i>リセット
+                </button>
+            </div>
+            <!-- ★ 追加ここまで ★ -->
+
+        </div>
                     </div>
                     <div id="recordingStatus" style="margin-top: 15px; text-align: center; color: #555; font-weight: bold;">
                         ⏹️ 録画待機中
@@ -261,12 +290,6 @@
         </section>
 
         <footer>
-            <div class="footerLeft">
-                <button id="voiceBtn">🎤 話す</button>
-                <button id="startBtn">▶ ロープレ開始</button>
-                <button id="endBtn">⏹ ロープレ終了</button>
-                <button id="resetBtn">🔄 リセット</button>
-            </div>
             <div class="footerRight">
                 <span id="voiceStatusFooter" style="font-weight: bold; color: #4CAF50;">🎤 待機中</span>
             </div>
