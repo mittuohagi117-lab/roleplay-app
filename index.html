@@ -703,7 +703,7 @@ const APP = {
 
     receiveAIMessage(message){
         this.appendAIMessage(message);
-        playAIVoice(message);
+        playAIVoice(message, this.state.persona);
         this.state.chatHistory.push({ role: "assistant", message: message, time: new Date().toISOString() });
         this.setVoiceStatus("🎤 ボタンを押して話す");
         document.getElementById("voiceBtn").disabled = false;
@@ -1170,7 +1170,8 @@ async function playAIVoice(text) {
       headers: { "Content-Type": "application/x-www-form-urlencoded" }, 
       body: JSON.stringify({
         action: "getAudio",
-        text: text
+        text: text,
+        persona: persona // ★これを追加してGASにペルソナを教える！
       })
     });
 
