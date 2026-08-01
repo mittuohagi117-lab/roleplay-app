@@ -223,7 +223,7 @@
                             <span>ロープレ開始時に<br>カメラが起動します</span>
                         </div>
                          <!-- ② 操作ボタン群（縦並び・スクロール不要） -->
-            <!-- ① ウェブカメラプレビュー（※ご自身の実際のプレビュー部分のコード） -->
+<!-- ① ウェブカメラプレビュー -->
             <div class="bg-black rounded-xl aspect-video relative overflow-hidden shadow-md">
                 <video id="webcam" class="w-full h-full object-cover" autoplay playsinline muted></video>
                 <div class="absolute bottom-2 left-2 text-white text-xs bg-black/60 px-2 py-1 rounded">
@@ -250,19 +250,17 @@
             </div>
             <!-- ★ 追加ここまで ★ -->
 
-        </div>
-                    </div>
-                    <div id="recordingStatus" style="margin-top: 15px; text-align: center; color: #555; font-weight: bold;">
-                        ⏹️ 録画待機中
-                    </div>
-                </div>
-            </section>
-        </main>
+            <div id="recordingStatus" style="margin-top: 15px; text-align: center; color: #555; font-weight: bold;">
+                ⏹️ 録画待機中
+            </div>
 
-        <section class="goal">
-            <div class="sectionTitle"><span class="material-icons">school</span> 本日の学習目標</div>
-            <ul id="goalList"><li>読み込み中...</li></ul>
         </section>
+    </main>
+
+    <section class="goal">
+        <div class="sectionTitle"><span class="material-icons">school</span> 本日の学習目標</div>
+        <ul id="goalList"><li>読み込み中...</li></ul>
+    </section>
 
         <section class="memo">
             <div class="sectionTitle"><span class="material-icons">edit_note</span> 営業メモ</div>
