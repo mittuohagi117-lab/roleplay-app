@@ -1158,20 +1158,31 @@ function updateWelcomeMessage() {
  * 音声再生処理（Google Cloud TTS呼び出し）
  * ========================================================
  */
+<!-- ... existing code ... -->
 async function playAIVoice(text) {
   try {
-    // ※ エンドポイントURLは、現在チャットなどを送っている変数（例: APP.ENDPOINT_URL など）に置き換えてください。
+    // UIのステータスを更新
+    const voiceStatus = document.getElementById('voiceStatus');
+    if (voiceStatus) voiceStatus.innerHTML = "🎤 音声生成中...";
+
+    // エンドポイントURL（※ご自身のGASのURLが代入されている変数）
     const endpointUrl = APP.ENDPOINT_URL; 
+
+    // 画面のセレクトボックスから確実にお客様設定を取得する
+    const currentPersona = {
+        年代: document.getElementById('selectAge') ? document.getElementById('selectAge').value : "all",
+        性別: document.getElementById('selectGender') ? document.getElementById('selectGender').value : "all"
+    };
 
     // GASに「テキストを音声にして！」とお願いする
     const response = await fetch(endpointUrl, {
       method: "POST",
-      // GASのdoPostで受け取るため、ヘッダーは他の通信と揃えます
-      headers: { "Content-Type": "application/x-www-form-urlencoded" }, 
+      // GASの仕様に合わせ、ヘッダーを text/plain にするか、あるいは指定しない（デフォルト）ことでCORSエラーを防ぎます
+      headers: { "Content-Type": "text/plain" }, 
       body: JSON.stringify({
         action: "getAudio",
         text: text,
-        persona: persona // ★これを追加してGASにペルソナを教える！
+        persona: currentPersona // ★ここで確実に取得したペルソナを渡す
       })
     });
 
@@ -1182,14 +1193,26 @@ async function playAIVoice(text) {
     if (data.audioBase64) {
       const audioSrc = "data:audio/mp3;base64," + data.audioBase64;
       const audio = new Audio(audioSrc);
+      
+      if (voiceStatus) voiceStatus.innerHTML = "🔊 再生中...";
+      
+      // 再生が終わったら待機中に戻す
+      audio.onended = () => {
+          if (voiceStatus) voiceStatus.innerHTML = "🎤 待機中";
+      };
+      
       audio.play(); // スピーカーから音声が流れます！
+      
     } else if (data.error) {
       console.error("音声の取得に失敗しました:", data.error);
+      if (voiceStatus) voiceStatus.innerHTML = "⚠️ 音声エラー";
     }
   } catch (error) {
     console.error("音声通信エラー:", error);
+    if (voiceStatus) voiceStatus.innerHTML = "⚠️ 音声エラー";
   }
 }
+<!-- ... existing code ... -->
 </script>
 </body>
 </html>
