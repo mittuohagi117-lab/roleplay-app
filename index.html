@@ -37,7 +37,7 @@
         .loader{width:56px;height:56px;border:6px solid #ddd;border-top:6px solid var(--main-color);border-radius:50%;animation:spin 1s linear infinite}
         @keyframes spin{to{transform:rotate(360deg)}}
         @media(max-width:900px){main{grid-template-columns:1fr}#personaImage{width:180px;height:180px}footer{flex-direction:column}}
-        
+
         .chatRow { margin-bottom: 15px; display: flex; flex-direction: column; }
         .chatRow.user { align-items: flex-end; }
         .chatRow.ai { align-items: flex-start; }
@@ -62,17 +62,17 @@
         <div style="background: white; padding: 40px; border-radius: 12px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
             <h2 style="color: #4CAF50; margin-top: 0; margin-bottom: 10px;">ログイン</h2>
             <p style="font-size: 0.9em; color: #555; margin-bottom: 25px;">社員番号とお名前を入力して開始してください。</p>
-            
+
             <div style="text-align: left; margin-bottom: 15px;">
                 <label style="font-size: 0.85em; font-weight: bold; color: #333;">社員番号</label>
                 <input type="text" id="loginUserId" placeholder="例: 1001" style="width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 1em;">
             </div>
-            
+
             <div style="text-align: left; margin-bottom: 25px;">
                 <label style="font-size: 0.85em; font-weight: bold; color: #333;">お名前</label>
                 <input type="text" id="loginUserName" placeholder="例: 佐藤 太郎" style="width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 1em;">
             </div>
-            
+
             <button id="loginBtn" style="background-color: #4CAF50; color: white; border: none; padding: 15px; border-radius: 6px; cursor: pointer; width: 100%; font-size: 1.1em; font-weight: bold; transition: background-color 0.3s;">
                 ログインして開始
             </button>
@@ -187,7 +187,7 @@
                     <div class="chatHeader">
                         <span class="material-icons" style="vertical-align: middle;">forum</span> 会話履歴
                     </div>
-                    
+
                     <div id="traceGuideArea" style="display: none; background-color: #fffde7; border: 2px solid #FBC02D; border-radius: 8px; padding: 15px; margin: 10px;">
                         <div style="font-weight: bold; color: #F57F17; margin-bottom: 5px;">
                             📝 トレースステップ <span id="traceStep">1</span>：<span id="traceGoal">目標</span>
@@ -199,7 +199,7 @@
                     </div>
 
                     <div id="chatWindow"></div>
-                    
+
                     <div style="display: flex; gap: 10px; margin: 15px; padding: 10px; background-color: #f4f4f4; border-radius: 8px;">
                         <input type="text" id="chatInput" placeholder="メッセージを入力（Enterキーで送信）..." disabled 
                                style="flex-grow: 1; padding: 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; outline: none;">
@@ -208,7 +208,7 @@
                             送信
                         </button>
                     </div>
-                    
+
                     <div id="voiceStatus">🎤 待機中</div>
                 </div>
 
@@ -223,47 +223,17 @@
                             <span>ロープレ開始時に<br>カメラが起動します</span>
                         </div>
                     </div>
-                         <!-- ② 操作ボタン群（縦並び・スクロール不要） -->
-<!-- ① ウェブカメラプレビュー -->
-                    <div style="background-color: #e8f5e9; border: 2px solid #4CAF50; border-top: none; border-radius: 0 0 8px 8px; overflow: hidden; display: flex; justify-content: center; align-items: center; aspect-ratio: 4/3; margin-bottom: 15px;">
-                        <video id="userVideo" autoplay muted playsinline style="width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); display: none;"></video>
-                        <div id="videoPlaceholder" style="color: #4CAF50; text-align: center; padding: 20px;">
-                            <span class="material-icons" style="font-size: 3rem;">videocam_off</span><br>
-                            <span>ロープレ開始時に<br>カメラが起動します</span>
-                        </div>
-                    </div>
-                    <!-- ★ ここでプレビューの枠を正しく閉じています ★ -->
-
-                    <!-- ② 操作ボタン群（縦並び・スクロール不要） -->
-                    <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
-                        <!-- ロープレ開始ボタン -->
-                        <button id="startRoleplay" style="width: 100%; padding: 12px; background-color: #4CAF50; color: white; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 1rem;">
-                            <span class="material-icons" style="margin-right: 8px;">play_arrow</span>ロープレ開始
-                        </button>
-
-                        <!-- ロープレ終了ボタン -->
-                        <button id="endRoleplay" style="width: 100%; padding: 12px; background-color: #4CAF50; color: white; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 1rem;">
-                            <span class="material-icons" style="margin-right: 8px;">stop</span>ロープレ終了
-                        </button>
-
-                        <!-- リセットボタン -->
-                        <button id="resetRoleplay" style="width: 100%; padding: 12px; background-color: #2E7D32; color: white; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 1rem;">
-                            <span class="material-icons" style="margin-right: 8px;">refresh</span>リセット
-                        </button>
-                    </div>
-
-                    <!-- 録画ステータス -->
-                    <div id="recordingStatus" style="text-align: center; color: #555; font-weight: bold;">
+                    <div id="recordingStatus" style="margin-top: 15px; text-align: center; color: #555; font-weight: bold;">
                         ⏹️ 録画待機中
                     </div>
                 </div>
             </section>
-    </main>
+        </main>
 
-    <section class="goal">
-        <div class="sectionTitle"><span class="material-icons">school</span> 本日の学習目標</div>
-        <ul id="goalList"><li>読み込み中...</li></ul>
-    </section>
+        <section class="goal">
+            <div class="sectionTitle"><span class="material-icons">school</span> 本日の学習目標</div>
+            <ul id="goalList"><li>読み込み中...</li></ul>
+        </section>
 
         <section class="memo">
             <div class="sectionTitle"><span class="material-icons">edit_note</span> 営業メモ</div>
@@ -291,6 +261,12 @@
         </section>
 
         <footer>
+            <div class="footerLeft">
+                <button id="voiceBtn">🎤 話す</button>
+                <button id="startBtn">▶ ロープレ開始</button>
+                <button id="endBtn">⏹ ロープレ終了</button>
+                <button id="resetBtn">🔄 リセット</button>
+            </div>
             <div class="footerRight">
                 <span id="voiceStatusFooter" style="font-weight: bold; color: #4CAF50;">🎤 待機中</span>
             </div>
@@ -343,15 +319,15 @@ const APP = {
         document.getElementById("endBtn").addEventListener("click", () => this.endRolePlay());
         document.getElementById("resetBtn").addEventListener("click", () => this.resetRolePlay());
         document.getElementById("voiceBtn").addEventListener("click", () => this.toggleVoice());
-        
+
         document.getElementById("sendBtn").addEventListener("click", () => this.sendTextMessage());
         document.getElementById("chatInput").addEventListener("keypress", (e) => {
             if(e.key === "Enter") this.sendTextMessage();
         });
-        
+
         document.getElementById("modeFreeBtn").addEventListener("click", () => this.switchMode("free"));
         document.getElementById("modeTraceBtn").addEventListener("click", () => this.switchMode("trace"));
-        
+
         document.getElementById("selectAge").addEventListener("change", () => this.changePersonaByCondition());
         document.getElementById("selectGender").addEventListener("change", () => this.changePersonaByCondition());
         document.getElementById("selectFamily").addEventListener("change", () => this.changePersonaByCondition());
@@ -363,11 +339,11 @@ const APP = {
                 if (document.activeElement.tagName === "INPUT" || document.activeElement.tagName === "TEXTAREA") {
                     return; 
                 }
-                
+
                 // ロープレ中のみ反応させる
                 if (this.state.rolePlay) {
                     e.preventDefault(); // 画面が下にスクロールしてしまう標準機能を防ぐ
-                    
+
                     // 長押しで連続して何度もボタンが押された判定になるのを防ぐ
                     if (!e.repeat) { 
                         this.toggleVoice(); // 「話す」ボタンを押したのと同じ処理を呼び出す
@@ -381,11 +357,11 @@ const APP = {
     switchMode(targetMode){
         if(this.state.rolePlay) return; 
         this.state.mode = targetMode;
-        
+
         const freeBtn = document.getElementById("modeFreeBtn");
         const traceBtn = document.getElementById("modeTraceBtn");
         const guideArea = document.getElementById("traceGuideArea");
-        
+
         if(targetMode === "free"){
             freeBtn.style.backgroundColor = "#4CAF50"; freeBtn.style.color = "white";
             traceBtn.style.backgroundColor = "#ffffff"; traceBtn.style.color = "#4CAF50";
@@ -423,7 +399,7 @@ const APP = {
         const family = document.getElementById("selectFamily").value;
         const insurance = document.getElementById("selectInsurance").value;
         const resultMsg = document.getElementById("personaSearchResult");
-        
+
         const filtered = this.state.personaList.filter(p => {
             const matchAge = (age === "all") || (p.年代 === age);
             const matchGender = (gender === "all") || (p.性別 === gender);
@@ -441,7 +417,7 @@ const APP = {
             this.displayPersona({ 名前: "該当なし", 年代: "-", 性別: "-", 職業: "-", 家族構成: "-", 加入状況: "-", 性格: "-", 難易度: "-" });
         }
     },
-    
+
     sendTextMessage(){
         const input = document.getElementById("chatInput");
         if(!input) return;
@@ -460,12 +436,12 @@ const APP = {
                 body: JSON.stringify({ action: "init" })
             });
             const responseData = await response.json();
-            
+
             if (responseData.status === "success") {
                 const data = responseData.data;
                 this.state.personaList = data.personaList || []; 
                 this.state.traceData = data.traceData || [];
-                
+
                 if(this.state.personaList.length > 0) {
                     this.state.persona = this.state.personaList[0]; 
                 } else {
@@ -492,7 +468,7 @@ const APP = {
 
     showLoading() { document.getElementById("loadingScreen").style.display = "flex"; },
     hideLoading() { document.getElementById("loadingScreen").style.display = "none"; },
-    
+
     showError(error){
         console.error(error);
         const div = document.getElementById("errorMessage");
@@ -567,7 +543,7 @@ const APP = {
         this.setText("insurance", persona.加入状況 || "-");
         this.setText("personality", persona.性格 || "-");
         this.setText("difficulty", persona.難易度 || "-");
-        
+
         if(persona.画像URL){
             document.getElementById("personaImage").src = persona.画像URL;
         }
@@ -656,7 +632,7 @@ const APP = {
         if(!message) return;
         this.appendUserMessage(message);
         this.state.chatHistory.push({ role: "user", message: message, time: new Date().toISOString() });
-        
+
         if (this.state.mode === "trace") {
             this.processTraceStep(message);
         } else {
@@ -676,7 +652,7 @@ const APP = {
         setTimeout(() => {
             this.receiveAIMessage(reply);
             this.state.currentTraceIndex++;
-            
+
             if (this.state.currentTraceIndex < this.state.traceData.length) {
                 this.updateTraceGuide();
             } else {
@@ -756,11 +732,11 @@ const APP = {
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
             this.state.cameraStream = stream;
-            
+
             const videoEl = document.getElementById("userVideo");
             const placeholder = document.getElementById("videoPlaceholder");
             const recStatus = document.getElementById("recordingStatus");
-            
+
             videoEl.srcObject = stream;
             videoEl.style.display = "block";
             placeholder.style.display = "none";
@@ -769,7 +745,7 @@ const APP = {
 
             this.state.recordedChunks = [];
             this.state.mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
-            
+
             this.state.mediaRecorder.ondataavailable = (event) => {
                 if (event.data.size > 0) {
                     this.state.recordedChunks.push(event.data);
@@ -817,7 +793,7 @@ const APP = {
 
         const blob = new Blob(this.state.recordedChunks, { type: 'video/webm' });
         const reader = new FileReader();
-        
+
         reader.readAsDataURL(blob);
         reader.onloadend = async () => {
             const base64Data = reader.result;
@@ -834,7 +810,7 @@ const APP = {
                     })
                 });
                 const res = await response.json();
-                
+
                 if(res.status === "success") {
                     if(evalArea) evalArea.innerHTML += `<div style='text-align:center; padding: 10px; margin-top:10px; background-color:#e8f5e9; border-radius:8px; color:#4CAF50;'>✅ 動画を保存しました！<br><a href="${res.url}" target="_blank" style="color:#4CAF50; text-decoration:underline;">📺 録画を確認する</a></div>`;
                 } else {
@@ -922,7 +898,7 @@ const APP = {
         this.stopTimer();
         this.updateButtons();
         this.stopCameraAndRecording();
-        
+
         const evalArea = document.getElementById("evaluationArea");
         if(evalArea) {
             evalArea.innerHTML = "<div style='text-align:center; padding:20px; color:#4CAF50;'>🤖 採点中...</div>";
@@ -946,10 +922,10 @@ const APP = {
                     headers: { "Content-Type": "text/plain" },
                     body: JSON.stringify(payload)
                 });
-                
+
                 const result = await response.json();
                 this.displayEvaluation(result); 
-                
+
             } catch (err) {
                 console.error(err);
                 if(evalArea) evalArea.innerHTML = "エラーが発生しました。";
@@ -1022,7 +998,7 @@ const APP = {
         this.updateButtons();
         this.setVoiceStatus("🎤 待機中");
         this.stopCameraAndRecording();
-        
+
         const evalArea = document.getElementById("evaluationArea");
         if(evalArea) evalArea.innerHTML = "";
         this.state.currentTraceIndex = 0;
@@ -1106,36 +1082,36 @@ function checkAndLogin() {
     const loginModal = document.getElementById("loginModal");
     const loginBtn = document.getElementById("loginBtn");
     const msg = document.getElementById("loginMessage");
-    
+
     const savedUserId = localStorage.getItem("userId");
-    
+
     if (savedUserId) {
         loginModal.style.display = "none";
         console.log("ログイン済み: " + savedUserId);
-        
+
         // ★修正：ログイン済みだった場合にここで呼び出します
         updateWelcomeMessage(); 
-        
+
     } else {
         loginBtn.addEventListener("click", async () => {
             const userId = document.getElementById("loginUserId").value.trim();
             const userName = document.getElementById("loginUserName").value.trim();
-            
+
             if (!userId || !userName) {
                 msg.textContent = "社員番号とお名前を入力してください。";
                 return;
             }
-            
+
             loginBtn.disabled = true;
             loginBtn.style.backgroundColor = "#ccc";
             msg.textContent = "ログイン中...";
-            
+
             const payload = {
                 action: "login",
                 userId: userId,
                 name: userName
             };
-            
+
             try {
                 const response = await fetch(APP.ENDPOINT_URL, {
                     method: "POST",
@@ -1143,16 +1119,16 @@ function checkAndLogin() {
                     body: JSON.stringify(payload)
                 });
                 const result = await response.json();
-                
+
                 if (result.status === "success") {
                     localStorage.setItem("userId", userId);
                     localStorage.setItem("userName", userName);
                     loginModal.style.display = "none";
                     msg.textContent = "";
-                    
+
                     // ★修正：新しくログインが成功した場合にここで呼び出します
                     updateWelcomeMessage();
-                    
+
                 } else {
                     throw new Error(result.message);
                 }
@@ -1172,7 +1148,7 @@ checkAndLogin();
 function updateWelcomeMessage() {
     const userName = localStorage.getItem("userName");
     const welcomeEl = document.getElementById("welcomeMessage");
-    
+
     if (userName && welcomeEl) {
         welcomeEl.textContent = `ようこそ ${userName} さん`;
     }
@@ -1182,7 +1158,7 @@ function updateWelcomeMessage() {
  * 音声再生処理（Google Cloud TTS呼び出し）
  * ========================================================
  */
-async function playAIVoice(text, persona) {
+async function playAIVoice(text) {
   try {
     // ※ エンドポイントURLは、現在チャットなどを送っている変数（例: APP.ENDPOINT_URL など）に置き換えてください。
     const endpointUrl = APP.ENDPOINT_URL; 
