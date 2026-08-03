@@ -650,7 +650,7 @@ const APP = {
         document.getElementById("voiceBtn").disabled = true;
 
         setTimeout(() => {
-            this.receiveAIMessage(reply);
+            this.(reply);
             this.state.currentTraceIndex++;
 
             if (this.state.currentTraceIndex < this.state.traceData.length) {
@@ -685,17 +685,17 @@ const APP = {
             const result = await response.json();
 
             if(result.status === "error") {
-                this.receiveAIMessage("エラー: " + result.message);
+                this.("エラー: " + result.message);
                 return;
             }
 
-            this.receiveAIMessage(result.reply || "（返答を生成できませんでした）");
+            this.(result.reply || "（返答を生成できませんでした）");
             if (result.emotion) this.changeEmotion(result.emotion);
             if (result.trustDiff !== undefined) this.changeTrust(Number(result.trustDiff));
 
         } catch (err) {
             console.error(err);
-            this.receiveAIMessage("エラー: 通信に失敗しました。");
+            this.("エラー: 通信に失敗しました。");
         }
         // ★修正ポイント：ここの finally ブロック（強制的に待機中に戻す処理）を削除しました
     },
@@ -704,10 +704,8 @@ const APP = {
         this.appendAIMessage(message);
         this.state.chatHistory.push({ role: "assistant", message: message, time: new Date().toISOString() });
         
-        // ★修正ポイント：ここで音声をスタートさせます！
-        playAIVoice(message); 
-        
-        // ★修正ポイント：ここにあった「待機中」に戻すコードは削除しました（音声が終わった時に戻すため）
+        // ★修正1：ペルソナデータ（お客様の詳細情報）を音声生成工場に渡すように変更！
+        playAIVoice(message, this.state.persona); 
     },
 
     evaluateConversation(message){
@@ -1159,17 +1157,15 @@ function updateWelcomeMessage() {
  * 音声再生処理（Google Cloud TTS呼び出し）
  * ========================================================
  */
-async function playAIVoice(text) {
+async function playAIVoice(text, persona) { // ★修正2：引数に persona を追加
   try {
     const voiceStatus = document.getElementById('voiceStatus');
     if (voiceStatus) voiceStatus.innerHTML = "🎤 音声生成中...";
 
     const endpointUrl = APP.ENDPOINT_URL; 
 
-    const currentPersona = {
-        年代: document.getElementById('selectAge') ? document.getElementById('selectAge').value : "all",
-        性別: document.getElementById('selectGender') ? document.getElementById('selectGender').value : "all"
-    };
+    // ★修正3：セレクトボックスではなく、渡されたお客様情報をそのままGASへ送る
+    const currentPersona = persona || {};
 
     const response = await fetch(endpointUrl, {
       method: "POST",
@@ -1177,7 +1173,7 @@ async function playAIVoice(text) {
       body: JSON.stringify({
         action: "getAudio",
         text: text,
-        persona: currentPersona 
+        persona: currentPersona // 確実にお客様の性別が伝わります
       })
     });
 
@@ -1190,7 +1186,6 @@ async function playAIVoice(text) {
       
       if (voiceStatus) voiceStatus.innerHTML = "🔊 再生中...";
       
-      // 再生が終わったら待機中に戻し、ボタンを有効化する
       audio.onended = () => {
           if (voiceStatus) voiceStatus.innerHTML = "🎤 ボタンを押して話す";
           const voiceBtn = document.getElementById("voiceBtn");
@@ -1202,10 +1197,17 @@ async function playAIVoice(text) {
     } else if (data.error) {
       console.error("音声の取得に失敗しました:", data.error);
       if (voiceStatus) voiceStatus.innerHTML = "⚠️ 音声エラー";
+      // ★追加：エラー時もボタンを復活させる
+      const voiceBtn = document.getElementById("voiceBtn");
+      if(voiceBtn) voiceBtn.disabled = false;
     }
   } catch (error) {
     console.error("音声通信エラー:", error);
-    if (voiceStatus) voiceStatus.innerHTML = "⚠️ 音声エラー";
+    // ★追加：通信遮断（Failed to fetch）時もフリーズを解除して次に進めるようにする
+    const voiceStatus = document.getElementById('voiceStatus');
+    if (voiceStatus) voiceStatus.innerHTML = "⚠️ 連続通信エラー";
+    const voiceBtn = document.getElementById("voiceBtn");
+    if(voiceBtn) voiceBtn.disabled = false;
   }
 }
 </script>
