@@ -666,7 +666,8 @@ const APP = {
 
     async requestAIResponse(message) {
         this.setVoiceStatus("🤖 AIが考えています...");
-        document.getElementById("voiceBtn").disabled = true;
+        const voiceBtn = document.getElementById("voiceBtn");
+        if(voiceBtn) voiceBtn.disabled = true;
 
         const payload = {
             action: "chat", 
@@ -695,18 +696,18 @@ const APP = {
         } catch (err) {
             console.error(err);
             this.receiveAIMessage("エラー: 通信に失敗しました。");
-        } finally {
-            this.setVoiceStatus("🎤 ボタンを押して話す");
-            document.getElementById("voiceBtn").disabled = false;
         }
+        // ★修正ポイント：ここの finally ブロック（強制的に待機中に戻す処理）を削除しました
     },
 
     receiveAIMessage(message){
         this.appendAIMessage(message);
-        playAIVoice(message, this.state.persona);
         this.state.chatHistory.push({ role: "assistant", message: message, time: new Date().toISOString() });
-        this.setVoiceStatus("🎤 ボタンを押して話す");
-        document.getElementById("voiceBtn").disabled = false;
+        
+        // ★修正ポイント：ここで音声をスタートさせます！
+        playAIVoice(message); 
+        
+        // ★修正ポイント：ここにあった「待機中」に戻すコードは削除しました（音声が終わった時に戻すため）
     },
 
     evaluateConversation(message){
@@ -1158,50 +1159,45 @@ function updateWelcomeMessage() {
  * 音声再生処理（Google Cloud TTS呼び出し）
  * ========================================================
  */
-<!-- ... existing code ... -->
 async function playAIVoice(text) {
   try {
-    // UIのステータスを更新
     const voiceStatus = document.getElementById('voiceStatus');
     if (voiceStatus) voiceStatus.innerHTML = "🎤 音声生成中...";
 
-    // エンドポイントURL（※ご自身のGASのURLが代入されている変数）
     const endpointUrl = APP.ENDPOINT_URL; 
 
-    // 画面のセレクトボックスから確実にお客様設定を取得する
     const currentPersona = {
         年代: document.getElementById('selectAge') ? document.getElementById('selectAge').value : "all",
         性別: document.getElementById('selectGender') ? document.getElementById('selectGender').value : "all"
     };
 
-    // GASに「テキストを音声にして！」とお願いする
     const response = await fetch(endpointUrl, {
       method: "POST",
-      // GASの仕様に合わせ、ヘッダーを text/plain にするか、あるいは指定しない（デフォルト）ことでCORSエラーを防ぎます
       headers: { "Content-Type": "text/plain" }, 
       body: JSON.stringify({
         action: "getAudio",
         text: text,
-        persona: currentPersona // ★ここで確実に取得したペルソナを渡す
+        persona: currentPersona 
       })
     });
 
     const data = await response.json();
     console.log("TTSレスポンス確認:", data);
 
-    // 音声データが正常に返ってきたら再生する
     if (data.audioBase64) {
       const audioSrc = "data:audio/mp3;base64," + data.audioBase64;
       const audio = new Audio(audioSrc);
       
       if (voiceStatus) voiceStatus.innerHTML = "🔊 再生中...";
       
-      // 再生が終わったら待機中に戻す
+      // 再生が終わったら待機中に戻し、ボタンを有効化する
       audio.onended = () => {
-          if (voiceStatus) voiceStatus.innerHTML = "🎤 待機中";
+          if (voiceStatus) voiceStatus.innerHTML = "🎤 ボタンを押して話す";
+          const voiceBtn = document.getElementById("voiceBtn");
+          if(voiceBtn) voiceBtn.disabled = false;
       };
       
-      audio.play(); // スピーカーから音声が流れます！
+      audio.play(); 
       
     } else if (data.error) {
       console.error("音声の取得に失敗しました:", data.error);
