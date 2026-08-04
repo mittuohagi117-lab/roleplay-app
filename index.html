@@ -651,6 +651,7 @@ const APP = {
 
         setTimeout(() => {
             this.(reply);
+            this.receiveAIMessage(reply); // ★修正：receiveAIMessage を追加
             this.state.currentTraceIndex++;
 
             if (this.state.currentTraceIndex < this.state.traceData.length) {
