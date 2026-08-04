@@ -665,7 +665,6 @@ const APP = {
     },
 
     async requestAIResponse(message) {
-  async requestAIResponse(message) {
         this.setVoiceStatus("🤖 AIが考えています...");
         const voiceBtn = document.getElementById("voiceBtn");
         if(voiceBtn) voiceBtn.disabled = true;
@@ -687,19 +686,16 @@ const APP = {
 
             if(result.status === "error") {
                 this.("エラー: " + result.message);
-                this.receiveAIMessage("エラー: " + result.message); // ★修正：receiveAIMessageに直しました
                 return;
             }
 
             this.(result.reply || "（返答を生成できませんでした）");
-            this.receiveAIMessage(result.reply || "（返答を生成できませんでした）"); // ★修正：receiveAIMessageに直しました
             if (result.emotion) this.changeEmotion(result.emotion);
             if (result.trustDiff !== undefined) this.changeTrust(Number(result.trustDiff));
 
         } catch (err) {
             console.error(err);
             this.("エラー: 通信に失敗しました。");
-            this.receiveAIMessage("エラー: 通信に失敗しました。"); // ★修正：receiveAIMessageに直しました
         }
         // ★修正ポイント：ここの finally ブロック（強制的に待機中に戻す処理）を削除しました
     },
@@ -707,7 +703,7 @@ const APP = {
     receiveAIMessage(message){
         this.appendAIMessage(message);
         this.state.chatHistory.push({ role: "assistant", message: message, time: new Date().toISOString() });
-
+        
         // ★修正1：ペルソナデータ（お客様の詳細情報）を音声生成工場に渡すように変更！
         playAIVoice(message, this.state.persona); 
     },
@@ -1187,17 +1183,17 @@ async function playAIVoice(text, persona) { // ★修正2：引数に persona �
     if (data.audioBase64) {
       const audioSrc = "data:audio/mp3;base64," + data.audioBase64;
       const audio = new Audio(audioSrc);
-
+      
       if (voiceStatus) voiceStatus.innerHTML = "🔊 再生中...";
-
+      
       audio.onended = () => {
           if (voiceStatus) voiceStatus.innerHTML = "🎤 ボタンを押して話す";
           const voiceBtn = document.getElementById("voiceBtn");
           if(voiceBtn) voiceBtn.disabled = false;
       };
-
+      
       audio.play(); 
-
+      
     } else if (data.error) {
       console.error("音声の取得に失敗しました:", data.error);
       if (voiceStatus) voiceStatus.innerHTML = "⚠️ 音声エラー";
