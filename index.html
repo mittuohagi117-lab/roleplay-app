@@ -664,6 +664,7 @@ const APP = {
         }, 1000); 
     },
 
+    async requestAIResponse(message) {
   async requestAIResponse(message) {
         this.setVoiceStatus("🤖 AIが考えています...");
         const voiceBtn = document.getElementById("voiceBtn");
@@ -685,24 +686,28 @@ const APP = {
             const result = await response.json();
 
             if(result.status === "error") {
+                this.("エラー: " + result.message);
                 this.receiveAIMessage("エラー: " + result.message); // ★修正：receiveAIMessageに直しました
                 return;
             }
 
+            this.(result.reply || "（返答を生成できませんでした）");
             this.receiveAIMessage(result.reply || "（返答を生成できませんでした）"); // ★修正：receiveAIMessageに直しました
             if (result.emotion) this.changeEmotion(result.emotion);
             if (result.trustDiff !== undefined) this.changeTrust(Number(result.trustDiff));
 
         } catch (err) {
             console.error(err);
+            this.("エラー: 通信に失敗しました。");
             this.receiveAIMessage("エラー: 通信に失敗しました。"); // ★修正：receiveAIMessageに直しました
         }
+        // ★修正ポイント：ここの finally ブロック（強制的に待機中に戻す処理）を削除しました
     },
 
     receiveAIMessage(message){
         this.appendAIMessage(message);
         this.state.chatHistory.push({ role: "assistant", message: message, time: new Date().toISOString() });
-        
+
         // ★修正1：ペルソナデータ（お客様の詳細情報）を音声生成工場に渡すように変更！
         playAIVoice(message, this.state.persona); 
     },
@@ -1156,106 +1161,59 @@ function updateWelcomeMessage() {
  * 音声再生処理（Google Cloud TTS呼び出し）
  * ========================================================
  */
-async function  const result = await response.json();
+async function playAIVoice(text, persona) { // ★修正2：引数に persona を追加
+  try {
+    const voiceStatus = document.getElementById('voiceStatus');
+    if (voiceStatus) voiceStatus.innerHTML = "🎤 音声生成中...";
 
-            if(result.status === "error") {
-                this.receiveAIMessage("エラー: " + result.message); // ★修正：receiveAIMessageに直しました
-                return;
-            }
+    const endpointUrl = APP.ENDPOINT_URL; 
 
-            this.receiveAIMessage(result.reply || "（返答を生成できませんでした）"); // ★修正：receiveAIMessageに直しました
-            if (result.emotion) this.changeEmotion(result.emotion);
-            if (result.trustDiff !== undefined) this.changeTrust(Number(result.trustDiff));
+    // ★修正3：セレクトボックスではなく、渡されたお客様情報をそのままGASへ送る
+    const currentPersona = persona || {};
 
-        } catch (err) {
-            console.error(err);
-            this.receiveAIMessage("エラー: 通信に失敗しました。"); // ★修正：receiveAIMessageに直しました
-        }
-    },
+    const response = await fetch(endpointUrl, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain" }, 
+      body: JSON.stringify({
+        action: "getAudio",
+        text: text,
+        persona: currentPersona // 確実にお客様の性別が伝わります
+      })
+    });
 
-    receiveAIMessage(message){
-        this.appendAIMessage(message);
-        this.state.chatHistory.push({ role: "assistant", message: message, time: new Date().toISOString() });
-        
-        // ★修正1：ペルソナデータ（お客様の詳細情報）を音声生成工場に渡すように変更！
-    playAIVoice(message, this.state.persona); 
-    },(text, persona, retryCount = 0) { 
-    try {
-        const voiceStatus = document.getElementById('voiceStatus');
-        // リトライ時はメッセージを変える
-        if (voiceStatus) voiceStatus.innerHTML = retryCount > 0 ? `🎤 音声再取得中...(${retryCount}回目)` : "🎤 音声生成中...";
+    const data = await response.json();
+    console.log("TTSレスポンス確認:", data);
 
-        const endpointUrl = APP.ENDPOINT_URL; 
+    if (data.audioBase64) {
+      const audioSrc = "data:audio/mp3;base64," + data.audioBase64;
+      const audio = new Audio(audioSrc);
 
-        const currentPersona = persona || {};
+      if (voiceStatus) voiceStatus.innerHTML = "🔊 再生中...";
 
-        const response = await fetch(endpointUrl, {
-            method: "POST",
-            headers: { "Content-Type": "text/plain" }, 
-            body: JSON.stringify({
-                action: "getAudio",
-                text: text,
-                persona: currentPersona 
-            })
-        });
+      audio.onended = () => {
+          if (voiceStatus) voiceStatus.innerHTML = "🎤 ボタンを押して話す";
+          const voiceBtn = document.getElementById("voiceBtn");
+          if(voiceBtn) voiceBtn.disabled = false;
+      };
 
-        const data = await response.json();
-        console.log("TTSレスポンス確認:", data);
+      audio.play(); 
 
-        if (data.audioBase64) {
-            const audioSrc = "data:audio/mp3;base64," + data.audioBase64;
-            const audio = new Audio(audioSrc);
-            
-            if (voiceStatus) voiceStatus.innerHTML = "🔊 再生中...";
-            
-            audio.onended = () => {
-                if (voiceStatus) voiceStatus.innerHTML = "🎤 ボタンを押して話す";
-                const voiceBtn = document.getElementById("voiceBtn");
-                if(voiceBtn) voiceBtn.disabled = false;
-            };
-            
-            audio.play(); 
-            
-        } else if (data.error) {
-            console.error("音声の取得に失敗しました:", data.error);
-            if (voiceStatus) voiceStatus.innerHTML = "⚠️ 音声エラー";
-            const voiceBtn = document.getElementById("voiceBtn");
-            if(voiceBtn) voiceBtn.disabled = false;
-        }
-    } catch (error) {
-        console.error("音声通信エラー:", error);
-        
-        // ★ここが進化ポイント！通信エラー（弾かれた）場合、最大2回まで自動で再チャレンジする
-        if (retryCount < 2) {
-            console.log(`通信混雑のため、2秒後に再試行します... (${retryCount + 1}/2)`);
-            const voiceStatus = document.getElementById('voiceStatus');
-            if (voiceStatus) voiceStatus.innerHTML = `⚠️ 通信混雑...再試行します(${retryCount + 1}/2)`;
-            
-            // 2秒（2000ミリ秒）待ってからもう一度同じ処理を呼び出す
-            setTimeout(() => {
-                playAIVoice(text, persona, retryCount + 1);
-            }, 2000);
-            
-            return; // ここで一旦終了して、2秒後の再チャレンジを待つ
-        }
-
-        // 2回再チャレンジしてもダメだった場合はエラーとして終了
-        const voiceStatus = document.getElementById('voiceStatus');
-        if (voiceStatus) voiceStatus.innerHTML = "⚠️ 連続通信エラー";
-        const voiceBtn = document.getElementById("voiceBtn");
-        if(voiceBtn) voiceBtn.disabled = false;
+    } else if (data.error) {
+      console.error("音声の取得に失敗しました:", data.error);
+      if (voiceStatus) voiceStatus.innerHTML = "⚠️ 音声エラー";
+      // ★追加：エラー時もボタンを復活させる
+      const voiceBtn = document.getElementById("voiceBtn");
+      if(voiceBtn) voiceBtn.disabled = false;
     }
+  } catch (error) {
+    console.error("音声通信エラー:", error);
+    // ★追加：通信遮断（Failed to fetch）時もフリーズを解除して次に進めるようにする
+    const voiceStatus = document.getElementById('voiceStatus');
+    if (voiceStatus) voiceStatus.innerHTML = "⚠️ 連続通信エラー";
+    const voiceBtn = document.getElementById("voiceBtn");
+    if(voiceBtn) voiceBtn.disabled = false;
+  }
 }
-
-            this.receiveAIMessage(result.reply || "（返答を生成できませんでした）"); // ★修正：receiveAIMessageに直しました
-            if (result.emotion) this.changeEmotion(result.emotion);
-            if (result.trustDiff !== undefined) this.changeTrust(Number(result.trustDiff));
-
-        } catch (err) {
-            console.error(err);
-            this.receiveAIMessage("エラー: 通信に失敗しました。"); // ★修正：receiveAIMessageに直しました
-        }
-    },
 </script>
 </body>
 </html>
