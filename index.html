@@ -650,7 +650,6 @@ const APP = {
         document.getElementById("voiceBtn").disabled = true;
 
         setTimeout(() => {
-            this.(reply);
             this.receiveAIMessage(reply); // ★修正：receiveAIMessage を追加
             this.state.currentTraceIndex++;
 
