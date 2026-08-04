@@ -664,7 +664,7 @@ const APP = {
         }, 1000); 
     },
 
-    async requestAIResponse(message) {
+  async requestAIResponse(message) {
         this.setVoiceStatus("🤖 AIが考えています...");
         const voiceBtn = document.getElementById("voiceBtn");
         if(voiceBtn) voiceBtn.disabled = true;
@@ -685,19 +685,18 @@ const APP = {
             const result = await response.json();
 
             if(result.status === "error") {
-                this.("エラー: " + result.message);
+                this.receiveAIMessage("エラー: " + result.message); // ★修正：receiveAIMessageに直しました
                 return;
             }
 
-            this.(result.reply || "（返答を生成できませんでした）");
+            this.receiveAIMessage(result.reply || "（返答を生成できませんでした）"); // ★修正：receiveAIMessageに直しました
             if (result.emotion) this.changeEmotion(result.emotion);
             if (result.trustDiff !== undefined) this.changeTrust(Number(result.trustDiff));
 
         } catch (err) {
             console.error(err);
-            this.("エラー: 通信に失敗しました。");
+            this.receiveAIMessage("エラー: 通信に失敗しました。"); // ★修正：receiveAIMessageに直しました
         }
-        // ★修正ポイント：ここの finally ブロック（強制的に待機中に戻す処理）を削除しました
     },
 
     receiveAIMessage(message){
