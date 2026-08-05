@@ -641,7 +641,7 @@ const APP = {
         }
     },
 
-    processTraceStep(userMessage){
+      processTraceStep(userMessage){
         const currentData = this.state.traceData[this.state.currentTraceIndex];
         if(!currentData) return;
 
@@ -650,7 +650,8 @@ const APP = {
         document.getElementById("voiceBtn").disabled = true;
 
         setTimeout(() => {
-            this.receiveAIMessage(reply); // ★修正：receiveAIMessage を追加
+            this.receiveAIMessage(reply); // ★テキストと音声を両方実行
+            
             this.state.currentTraceIndex++;
 
             if (this.state.currentTraceIndex < this.state.traceData.length) {
@@ -662,7 +663,28 @@ const APP = {
                 }
             }
         }, 1000); 
-    },
+    }, // ← ここのカンマもOK！
+
+    // ▼▼▼ この採点機能が消えたり壊れたりしていました！復活させます ▼▼▼
+    evaluateConversation(message){
+        if(message.length > 40){
+            this.changeTrust(3);
+            this.changeEmotion("good");
+            return;
+        }
+        if(message.includes("ありがとうございます")){
+            this.changeTrust(5);
+            this.changeEmotion("excellent");
+            return;
+        }
+        if(message.includes("失礼")){
+            this.changeTrust(-5);
+            this.changeEmotion("bad");
+            return;
+        }
+        this.changeEmotion("normal");
+    }, // ← ここのカンマがないと requestAIResponse がエラーになります！
+    // ▲▲▲ 復活ここまで ▲▲▲
 
     async requestAIResponse(message) {
         this.setVoiceStatus("🤖 AIが考えています...");
@@ -677,27 +699,27 @@ const APP = {
         };
 
         try {
-            const response = await fetch(APP.ENDPOINT_URL, {
+            const response = await fetch(this.GAS_URL, {
                 method: "POST",
-                headers: { "Content-Type": "text/plain" },
+                headers: { "Content-Type": "text/plain" }, // CORS回避のため text/plain を推奨
                 body: JSON.stringify(payload)
             });
+            
             const result = await response.json();
 
             if(result.status === "error") {
-                this.("エラー: " + result.message);
+                this.receiveAIMessage("エラー: " + result.message);
                 return;
             }
 
-            this.(result.reply || "（返答を生成できませんでした）");
+            this.receiveAIMessage(result.reply || "（返答を生成できませんでした）");
             if (result.emotion) this.changeEmotion(result.emotion);
             if (result.trustDiff !== undefined) this.changeTrust(Number(result.trustDiff));
 
         } catch (err) {
             console.error(err);
-            this.("エラー: 通信に失敗しました。");
+            this.receiveAIMessage("エラー: 通信に失敗しました。");
         }
-        // ★修正ポイント：ここの finally ブロック（強制的に待機中に戻す処理）を削除しました
     },
 
     receiveAIMessage(message){
