@@ -700,6 +700,7 @@ const APP = {
 
         try {
             const gasUrl ="https://script.google.com/macros/s/AKfycbxOmk8n5zMBIx87rQ_nLSVL0TmyhdE8qoBDJTfSOo-7VF2qpBS3uK2nvxzIDh3KJ0jzSg/exec";
+                const response = await fetch(gasUrl, {
                 method: "POST",
                 headers: { "Content-Type": "text/plain" }, // CORS回避のため text/plain を推奨
                 body: JSON.stringify(payload)
