@@ -357,6 +357,15 @@ const APP = {
     switchMode(targetMode){
         if(this.state.rolePlay) return; 
         this.state.mode = targetMode;
+        this.state.chatHistory = []; // AIの記憶（データ）をリセット
+
+        // チャット画面の表示を空っぽにする
+        // ※もし動かない場合は "chatArea" の部分を、ご自身のHTMLのチャット枠のID名に変更してください
+        const chatArea = document.getElementById("chatArea"); 
+        if (chatArea) {
+            chatArea.innerHTML = "";
+        }
+        // ★★★ 今回追加するリセット処理（ここまで） ★★★
 
         const freeBtn = document.getElementById("modeFreeBtn");
         const traceBtn = document.getElementById("modeTraceBtn");
