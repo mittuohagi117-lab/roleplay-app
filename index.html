@@ -325,8 +325,8 @@ const APP = {
             if(e.key === "Enter") this.sendTextMessage();
         });
 
-        document.getElementById("modeFreeBtn").addEventListener("click", () => this.switchMode("free"));
-        document.getElementById("modeTraceBtn").addEventListener("click", () => this.switchMode("trace"));
+        document.getElementById("modeFreeBtn").addEventListener("click", () => this.("free"));
+        document.getElementById("modeTraceBtn").addEventListener("click", () => this.("trace"));
 
         document.getElementById("selectAge").addEventListener("change", () => this.changePersonaByCondition());
         document.getElementById("selectGender").addEventListener("change", () => this.changePersonaByCondition());
@@ -360,10 +360,10 @@ const APP = {
         this.state.chatHistory = []; // AIの記憶（データ）をリセット
 
         // チャット画面の表示を空っぽにする
-        // ※もし動かない場合は "chatArea" の部分を、ご自身のHTMLのチャット枠のID名に変更してください
-        const chatArea = document.getElementById("chatArea"); 
-        if (chatArea) {
-            chatArea.innerHTML = "";
+        // ※もし動かない場合は "chatWindow" の部分を、ご自身のHTMLのチャット枠のID名に変更してください
+        const chatArea = document.getElementById("chatWindow"); 
+        if (chatWindow) {
+            chatWindow.innerHTML = "";
         }
         // ★★★ 今回追加するリセット処理（ここまで） ★★★
 
