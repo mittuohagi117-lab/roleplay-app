@@ -325,13 +325,16 @@ const APP = {
             if(e.key === "Enter") this.sendTextMessage();
         });
 
-        document.getElementById("modeFreeBtn").addEventListener("click", () => this.("free"));
-        document.getElementById("modeTraceBtn").addEventListener("click", () => this.("trace"));
+        // ▼▼▼ ここを修正しました！ ▼▼▼
+        document.getElementById("modeFreeBtn").addEventListener("click", () => this.switchMode("free"));
+        document.getElementById("modeTraceBtn").addEventListener("click", () => this.switchMode("trace"));
+        // ▲▲▲ 修正ここまで ▲▲▲
 
         document.getElementById("selectAge").addEventListener("change", () => this.changePersonaByCondition());
         document.getElementById("selectGender").addEventListener("change", () => this.changePersonaByCondition());
         document.getElementById("selectFamily").addEventListener("change", () => this.changePersonaByCondition());
         document.getElementById("selectInsurance").addEventListener("change", () => this.changePersonaByCondition());
+        
         document.addEventListener("keydown", (e) => {
             // 押されたキーがスペースキーだった場合
             if (e.code === "Space") {
