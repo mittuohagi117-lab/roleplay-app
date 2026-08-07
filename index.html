@@ -321,7 +321,6 @@ const APP = {
         document.getElementById("endBtn").addEventListener("click", () => this.endRolePlay());
         document.getElementById("resetBtn").addEventListener("click", () => this.resetRolePlay());
         document.getElementById("voiceBtn").addEventListener("click", () => this.toggleVoice());
-
         document.getElementById("sendBtn").addEventListener("click", () => this.sendTextMessage());
         document.getElementById("chatInput").addEventListener("keypress", (e) => {
             if(e.key === "Enter") this.sendTextMessage();
@@ -333,6 +332,7 @@ const APP = {
         // ▲▲▲ 修正ここまで ▲▲▲
 
         document.getElementById("selectAge").addEventListener("change", () => this.changePersonaByCondition());
+         document.getElementById("selectDifficulty").addEventListener("change", () => this.changePersonaByCondition());
         document.getElementById("selectGender").addEventListener("change", () => this.changePersonaByCondition());
         document.getElementById("selectFamily").addEventListener("change", () => this.changePersonaByCondition());
         document.getElementById("selectInsurance").addEventListener("change", () => this.changePersonaByCondition());
