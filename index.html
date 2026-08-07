@@ -402,19 +402,28 @@ const APP = {
         if(talkEl) talkEl.textContent = currentData.模範トーク || "";
     },
 
-    changePersonaByCondition(){
+changePersonaByCondition(){
         if(this.state.rolePlay || this.state.personaList.length === 0) return;
 
         const age = document.getElementById("selectAge").value;
         const gender = document.getElementById("selectGender").value;
         const family = document.getElementById("selectFamily").value;
         const insurance = document.getElementById("selectInsurance").value;
+        
+        // ★追加：画面のプルダウンから難易度を読み取る
+        const difficulty = document.getElementById("selectDifficulty").value; 
+        
         const resultMsg = document.getElementById("personaSearchResult");
 
         const filtered = this.state.personaList.filter(p => {
             const matchAge = (age === "all") || (p.年代 === age);
             const matchGender = (gender === "all") || (p.性別 === gender);
-            return matchAge && matchGender;
+            
+            // ★追加：スプレッドシートの「難易度」列と一致するかチェック（未選択の場合はスルー）
+            const matchDifficulty = (difficulty === "") || (p.難易度 === difficulty);
+            
+            // ★追加：年齢・性別・難易度のすべてをクリアした人だけを残す
+            return matchAge && matchGender && matchDifficulty;
         });
 
         if(filtered.length > 0){
