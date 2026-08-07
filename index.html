@@ -355,7 +355,6 @@ const APP = {
     },
 
     switchMode(targetMode){
-        if(this.state.rolePlay) return; 
         this.state.mode = targetMode;
         this.state.chatHistory = []; // AIの記憶（データ）をリセット
 
